@@ -1,0 +1,42 @@
+1,1,Alaska
+1,2,Alberta
+1,3,America Central
+1,4,Estados Unidos Orientales
+1,5,Groenlandia
+1,6,Teorritorio Noroccidental
+1,7,Ontario
+1,8,Quebec
+1,9,Estados Unidos Occidentales
+2,10,Argentina
+2,11,Brasil
+2,12,Peru
+2,13,Venezuela
+3,14,Gran Bretana
+3,15,Islandia
+3,16,Europa del Norte
+3,17,Escandinavia
+3,18,Europa del Sur
+3,19,Ucrania
+3,20,Europa Occidental
+4,21,Congo
+4,22,Africa Oriental
+4,23,Egipto
+4,24,Madagascar
+4,25,Africa del Norte
+4,26,Africa del Sur
+5,27,Afghanistan
+5,28,China
+5,29,India
+5,30,Irkutsk
+5,31,Japon
+5,32,Kamchatka
+5,33,Medio Oriente
+5,34,Mongolia
+5,35,Siam
+5,36,Siberia
+5,37,Ural
+5,38,Yakutsk
+6,39,Australia
+6,40,Indonesia
+6,41,Nueva Guinea
+6,42,Australia Occidental
