@@ -24,10 +24,9 @@ int main(int argc, char* argv[]) {
         getline(cin, linea);
         separarCadena(linea,comando,param1,param2);
 
-        if (comando == "help" || comando == "ayuda") {
+        if (C1 == "help" || C1 == "ayuda") {
             imprimirListaComandos();
         }
-
         else if (comando == "inicializar" && (param1 == "--help" || param1 == "--ayuda" || param1 == "")) {
             if(param1 == "--help" || param1 == "--ayuda" ){
                 cout << "\ninicializar -> Realiza las operaciones necesarias para inicializar el juego, de acuerdo a las instrucciones entregadas\n";
@@ -53,7 +52,6 @@ int main(int argc, char* argv[]) {
                 }
             }
         }
-
         else if (comando == "salir" || comando == "exit") {
             if(param1 == "--help" || param1 == "--ayuda" ){
                 cout << "\nsalir -> Termina la ejecucion de la aplicacion\n\n";
@@ -61,7 +59,6 @@ int main(int argc, char* argv[]) {
                 enEjecucion = false;
             }
         }
-
         else if (comando == "turno") {
             if(param1 == "--help" || param1 == "--ayuda" ){
                 cout << "\nturno -> Realiza las operaciones descritas dentro del turno de un jugador (obtener nuevas unidades, atacar y fortificar)\n\n";
@@ -73,7 +70,6 @@ int main(int argc, char* argv[]) {
                 }
             }
         }
-
         else if (comando == "guardar") {
             if(param1 == "--help" || param1 == "--ayuda" ){
                 cout << "\nguardar <nombre_archivo> -> El estado actual del juego es guardado en un archivo de texto\n\n";
@@ -89,7 +85,6 @@ int main(int argc, char* argv[]) {
                 }
             }
         }
-
         else if (comando == "guardar_comprimido") {
             if(param1 == "--help" || param1 == "--ayuda" ){
                 cout << "\nguardar_comprimido <nombre_archivo> -> El estado actual del juego es guardado en un archivo binario (con extension .bin)\n\n";
@@ -106,7 +101,6 @@ int main(int argc, char* argv[]) {
                 }
             }
         }
-
         else if (comando == "costo_conquista") {
             if(param1 == "--help" || param1 == "--ayuda" ){
                 cout << "\ncosto_conquista <territorio> -> El programa debe calcular el costo y la secuencia de territorios a ser conquistados para lograr controlar el territorio dado por el usuario\n\n";
@@ -122,7 +116,6 @@ int main(int argc, char* argv[]) {
                 }
             }
         }
-
         else if (comando == "conquista_mas_barata") {
             if(param1 == "--help" || param1 == "--ayuda" ){
                 cout << "\nDe todos los territorios posibles, calcular aquel que pueda implicar un menor numero de unidades de ejercito perdidas\n\n";
@@ -142,6 +135,7 @@ int main(int argc, char* argv[]) {
         else {
             cout << "\nComando invalido. Pruebe 'help' para ver todos los comandos.\n\n";
         }
+
     } while (enEjecucion);
 
     return 0;
