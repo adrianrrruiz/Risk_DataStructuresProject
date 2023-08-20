@@ -1,7 +1,7 @@
-#include "..\\include\\Risk.h"
+#include "../include/Risk.h"
 
 void Risk::leerContinentes(Risk &juego) {
-    ifstream file("Files\\Continentes.txt");
+    ifstream file("Files/Continentes.txt");
     string linea, nombre;
     int codigo, numeroPaises;
 
@@ -25,7 +25,7 @@ void Risk::leerContinentes(Risk &juego) {
 }
 
 void Risk::leerPaises(Risk &juego){
-    ifstream file("Files\\Paises.txt");
+    ifstream file("Files/Paises.txt");
     string linea, nombre;
     int codigoContinente, codigo;
 
@@ -56,7 +56,7 @@ void Risk::leerPaises(Risk &juego){
 }
 
 void Risk::leerRelaciones(Risk &juego) {
-    ifstream archivo("Files\\Relaciones.txt");
+    ifstream archivo("Files/Relaciones.txt");
     string linea;
     int codigo;
 
@@ -98,32 +98,6 @@ void Risk::imprimirInformacion(Risk &juego){
         }
     }
 }
-
-void Risk::inicializar(Risk &juego){
-    
-    leerContinentes(juego);
-    leerPaises(juego);
-    leerRelaciones(juego);
-
-    cout <<"ingrese el numero de participantes que jugaran:\n";
-    cin >> juego.cantidadJugadores;
-
-    if(juego.cantidadJugadores < 3){
-        cout << "Cantidad erronea, el juego necesita de 3 - 6 jugadores\n";
-        return;
-    }
-    else{
-        for(int i=0; i<juego.cantidadJugadores;i++){
-            cout<<"ingrese el nombre de los participante: \n";
-            cin>>juego.jugadores[i].nombre;
-            imprimirColores(juego);
-            cin>>juego.jugadores[i].color;
-        } 
-    }
-
-
-}
-
 void Risk::imprimirColores(Risk &juego){
     cout<< "escoja el color de su ejercito\n";
     for(int i =0; i<juego.colores.size(); i++){
@@ -136,4 +110,31 @@ void Risk::eliminarColor(Risk &juego,string color){
     if (it != colores.end()) {
         juego.colores.erase(it);
     }
+}
+
+void Risk::inicializar(Risk &juego){
+    
+    leerContinentes(juego);
+    leerPaises(juego);
+    leerRelaciones(juego);
+    string aux;
+    cout <<"ingrese el numero de participantes que jugaran:\n";
+    cin >> juego.cantidadJugadores;
+
+    if(juego.cantidadJugadores < 3){
+        cout << "Cantidad erronea, el juego necesita de 3 - 6 jugadores\n";
+        return;
+    }
+    else{
+        for(int i=0; i<juego.cantidadJugadores;i++){
+            cout<<"ingrese el nombre de los participante: \n";
+            cin>>aux;
+            juego.jugadores[i].nombre = aux;
+            imprimirColores(juego);
+            cin>>juego.jugadores[i].color;
+            eliminarColor(juego,juego.jugadores[i].color);
+        } 
+    }
+
+
 }

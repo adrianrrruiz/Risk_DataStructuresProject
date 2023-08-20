@@ -1,1 +1,1 @@
-#include "..\\include\\Jugador.h"
+#include "../include/Jugador.h"

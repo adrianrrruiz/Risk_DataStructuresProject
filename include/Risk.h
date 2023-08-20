@@ -3,9 +3,9 @@
 
 #include <iostream>
 #include <vector>
-#include <Continente.h>
-#include <Carta.h>
-#include <Jugador.h>
+#include "Continente.h"
+#include "Carta.h"
+#include "Jugador.h"
 #include <fstream>
 #include <sstream>
 #include <algorithm>
