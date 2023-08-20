@@ -1,0 +1,18 @@
+#ifndef CONTINENTE_H
+#define CONTINENTE_H
+
+#include <iostream>
+#include <vector>
+#include <Pais.h>
+
+using namespace std;
+
+class Continente {
+public:
+    string codigo;
+    string nombre;
+    int cantPaises;
+    vector<Pais> paises;
+};
+
+#endif  // CONTINENTE_H

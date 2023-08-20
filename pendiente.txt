@@ -18,7 +18,6 @@ struct Continente {
     string Nombre;
     int numeroPaises;
     vector<Pais> paises;
-
 };
 
 struct Jugador{
@@ -152,5 +151,4 @@ void imprimirInformacion(Juego &juego){
             cout << endl;
         }
     }
-
 }
