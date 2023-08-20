@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "Risk.h"
 
 using namespace std;
 
@@ -33,8 +34,11 @@ int main(int argc, char* argv[]) {
                 cout << "inicializar <nombre_archivo> -> Inicializa el juego con los datos contenidos en el archivo identificado por <nombre_archivo>\n\n";
             }else{
                 if (!inicializado){
+                    Risk juego;
                     cout << "\nEl juego se ha inicializado correctamente!\n\n";
                     inicializado = true;
+                    juego.inicializar(juego);
+
                 }else {
                     cout << "\nEl juego YA ha sido inicializado!\n\n";
                 }

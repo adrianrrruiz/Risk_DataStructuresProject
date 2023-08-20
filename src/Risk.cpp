@@ -45,9 +45,9 @@ void Risk::leerPaises(Risk &juego){
             pais.codigo = codigo;
             pais.nombre = nombre;
 
-            for(int i = 0; i<= juego.Continentes.size(); i++){
-                if(juego.Continentes[i].Codigo == pais.codigoContinente){
-                    juego.Continentes[i].paises.push_back(pais);
+            for(int i = 0; i<= juego.continentes.size(); i++){
+                if(juego.continentes[i].codigo == pais.codigoContinente){
+                    juego.continentes[i].paises.push_back(pais);
                 }
             }
         }
@@ -69,7 +69,7 @@ void Risk::leerRelaciones(Risk &juego) {
 
             for (int i = 0; i < juego.continentes.size(); i++) {
                 for (int j = 0; j < juego.continentes[i].paises.size(); j++) {
-                    if (juego.continentes[i].paises[j].codigo == codigo) {
+                    if (juego.continentes[i].paises[j].codigo.compare(to_string(codigo))) {
                         int relacionado;
                         while (iss >> relacionado) {
                             juego.continentes[i].paises[j].relaciones.push_back(relacionado);
@@ -97,5 +97,43 @@ void Risk::imprimirInformacion(Risk &juego){
             cout << endl;
         }
     }
+}
 
+void Risk::inicializar(Risk &juego){
+    
+    leerContinentes(juego);
+    leerPaises(juego);
+    leerRelaciones(juego);
+
+    cout <<"ingrese el numero de participantes que jugaran:\n";
+    cin >> juego.cantidadJugadores;
+
+    if(juego.cantidadJugadores < 3){
+        cout << "Cantidad erronea, el juego necesita de 3 - 6 jugadores\n";
+        return;
+    }
+    else{
+        for(int i=0; i<juego.cantidadJugadores;i++){
+            cout<<"ingrese el nombre de los participante: \n";
+            cin>>juego.jugadores[i].nombre;
+            imprimirColores(juego);
+            cin>>juego.jugadores[i].color;
+        } 
+    }
+
+
+}
+
+void Risk::imprimirColores(Risk &juego){
+    cout<< "escoja el color de su ejercito\n";
+    for(int i =0; i<juego.colores.size(); i++){
+        cout << i+1 << ": " << juego.colores[i] << endl;
+    }
+}
+
+void Risk::eliminarColor(Risk &juego,string color){
+    vector<string>::iterator it = find(juego.colores.begin(), colores.end(), color);
+    if (it != colores.end()) {
+        juego.colores.erase(it);
+    }
 }
