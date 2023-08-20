@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
         getline(cin, linea);
         separarCadena(linea,comando,param1,param2);
 
-        if (C1 == "help" || C1 == "ayuda") {
+        if (comando == "help" || comando == "ayuda") {
             imprimirListaComandos();
         }
         else if (comando == "inicializar" && (param1 == "--help" || param1 == "--ayuda" || param1 == "")) {
@@ -135,7 +135,6 @@ int main(int argc, char* argv[]) {
         else {
             cout << "\nComando invalido. Pruebe 'help' para ver todos los comandos.\n\n";
         }
-
     } while (enEjecucion);
 
     return 0;
