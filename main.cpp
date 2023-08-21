@@ -21,11 +21,13 @@ int main(int argc, char* argv[]) {
     bool enEjecucion = true, inicializado = false, jugando = false;
     vector<int> idJugadores;
     vector<int>::iterator itIdJugadores;
+    Risk juego;
 
     cout << "\nBienvenido a Risk! Desarrollado por: Adrian, Juliana y Daniel\n";
     do {
         cout << "$ ";
         getline(cin, linea);
+        system("cls");
         separarCadena(linea,comando,param1,param2);
 
         if (comando == "help" || comando == "ayuda") {
@@ -37,11 +39,12 @@ int main(int argc, char* argv[]) {
                 cout << "inicializar <nombre_archivo> -> Inicializa el juego con los datos contenidos en el archivo identificado por <nombre_archivo>\n\n";
             }else{
                 if (!inicializado){
-                    Risk juego;
-                    cout << "\nEl juego se ha inicializado correctamente!\n\n";
-                    inicializado = true;
-                    juego.inicializar(juego);
-
+                    bool finalizarInicializacion=juego.inicializar(juego);
+                    if(finalizarInicializacion){
+                        cout << "\nEl juego se ha inicializado correctamente!\n\n";
+                        inicializado = true;
+                        jugando = true;
+                    }
                 }else {
                     cout << "\nEl juego YA ha sido inicializado!\n\n";
                 }
@@ -74,6 +77,9 @@ int main(int argc, char* argv[]) {
                     cout << "\nEsta partida NO ha sido inicializada correctamente.\n\n";
                 }else if(!jugando){
                     cout << "\nEsta partida ya tuvo un ganador :(\n\n";
+                }
+                else{
+                    juego.turno(juego,param1);
                 }
             }
         }
