@@ -469,6 +469,7 @@ int Risk::escogerPaisAAtacar(Risk &juego,Jugador &jugador,Pais &pais){
     for (int codigo : posiblesAtaques) {
         cout << codigo << "-";
     }
+    cout << endl;
     do{
         cout<<"ingrese el pais a atacar: \n";
         cout<<"$";
@@ -527,8 +528,8 @@ void Risk::ataque(Pais & ataca, Pais & defiende, Jugador& atacante, Jugador& def
     cout << "Victorias del atacante: " << victoriasAtacante << "\n";
     cout << "Victorias del defensor: " << victoriasDefensor << "\n";
 
-    defiende.infanteria+=victoriasDefensor;
-    ataca.infanteria+=victoriasAtacante;
+    ataca.infanteria += tropasAtacantes - victoriasAtacante;
+    defiende.infanteria += tropasDefensa - victoriasDefensor;
 }
 Jugador& Risk::jugadorDefiende(Risk &juego, int codigo){
     int jugador ;
@@ -625,4 +626,3 @@ vector<int> Risk::dados(int cantidad){
     }
     return dados;
 }
-
