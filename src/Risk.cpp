@@ -104,6 +104,7 @@ string Risk::imprimirColores(Risk &juego){
     for(int i =0; i<juego.colores.size(); i++){
         cout << i+1 << ": " << juego.colores[i] << endl;
     }
+    cout << "$ ";
     cin>>num;
     switch(num) {
         case 1: return juego.colores[0];
@@ -143,6 +144,7 @@ void Risk::inicializar(Risk &juego){
 
     Jugador jugador;
     cout <<"ingrese el numero de participantes que jugaran:\n";
+    cout << "$ ";
     cin >> juego.cantidadJugadores;
 
     infanteriaXJugador = evaluarInfanteria(juego);
@@ -155,6 +157,7 @@ void Risk::inicializar(Risk &juego){
     else{
         for(int i=0; i<juego.cantidadJugadores;i++){
             cout<<"ingrese el nombre de los participante: \n";
+            cout << "$ ";
             cin>>nombre;
             color=imprimirColores(juego);
             eliminarColor(juego,color);
@@ -170,12 +173,29 @@ void Risk::inicializar(Risk &juego){
             
             juego.jugadores.push_back(jugador);
         }
+        ordenarJugadores(juego.jugadores);
         imprimirJugadores(juego); 
     }
     //elección de territorios
-    for(int i=0;i<42;i++){
+    int contador=0;
+    Pais paisEscogido;
 
+    for(int i=0;i<42;i++){
+        Jugador& jugadorActual = juego.jugadores[contador];
+        cout << "Turno jugador: " << jugadorActual.nombre << endl;
+        
+        Pais paisEscogido = elegirPais(juego);
+        paisEscogido.infanteria = 1;
+        jugadorActual.infanteria--;
+        jugadorActual.territorios.push_back(paisEscogido);
+        borrarPais(juego, paisEscogido);
+        
+        contador++;
+        if (contador == juego.cantidadJugadores) {
+            contador = 0;
+        }
     }
+    imprimirTerritoriosDeJugadores(juego);
 }
 
 void Risk::imprimirJugadores(Risk &juego){
@@ -201,7 +221,7 @@ int Risk::evaluarInfanteria(Risk &juego){
     }
 }
 
-int Risk::elegirPais(Risk &juego){
+Pais Risk::elegirPais(Risk &juego){
     int codigoTerritorio;
         cout<< "escoja el Territorio que desea ocupar\n";
         for(const Continente continente : juego.continentes){
@@ -210,11 +230,49 @@ int Risk::elegirPais(Risk &juego){
                 cout <<"\t"<< pais.codigo << ": " << pais.nombre << endl;
             }
         }
+        cout << "$ ";
         cin >> codigoTerritorio;
-        return codigoTerritorio;
+
+        for(const Continente continente : juego.continentes){
+            for(const Pais pais : continente.paises){
+                if(pais.codigo == codigoTerritorio){
+                    return pais;
+                }
+            }
+        }
+        
 }
 
 int Risk::lanzamientoDado(){
         int resultado = rand() % 6 + 1;
         return resultado;
+}
+
+void Risk:: ordenarJugadores(vector<Jugador> &jugadores){
+    int n = jugadores.size();
+    for (int i = 0; i < n - 1; ++i) {
+        for (int j = 0; j < n - i - 1; ++j) {
+            if ( jugadores[j]<jugadores[j+1]) {
+                swap(jugadores[j], jugadores[j + 1]);
+            }
+        }
+    }
+}
+void Risk::borrarPais(Risk &juego,Pais paisEscogido){
+    for(int i =0; i < juego.continentes.size();i++){
+        for(int j=0; j < juego.continentes[i].paises.size();j++){
+            if(juego.continentes[i].paises[j].codigo == paisEscogido.codigo){
+                juego.continentes[i].paises.erase(juego.continentes[i].paises.begin()+j);
+            }
+        }
+    }
+}
+
+void Risk::imprimirTerritoriosDeJugadores(Risk &juego){
+    for(const Jugador &jugador: juego.jugadores){
+        cout << "Terrotorios de " << jugador.nombre << endl;
+        for(const Pais &pais : jugador.territorios){
+            cout << pais.codigo <<": " <<pais.nombre << endl;
+        }
+    }
 }

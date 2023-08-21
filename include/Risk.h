@@ -23,9 +23,12 @@ public:
     void leerRelaciones(Risk &juego);
     void imprimirInformacion(Risk &juego);
     void imprimirJugadores(Risk &juego);
+    void borrarPais(Risk &juego,Pais paisEscogido);
+    void imprimirTerritoriosDeJugadores(Risk &juego);
     int evaluarInfanteria(Risk &juego);
-    int elegirPais(Risk &juego);
+    Pais elegirPais(Risk &juego);
     int lanzamientoDado();
+    void ordenarJugadores(vector<Jugador> &jugadores);
     vector<Continente> continentes;
     vector<Jugador> jugadores;
     vector <Carta> cartas;

@@ -15,8 +15,6 @@ public:
     vector<Pais> territorios;
     int infanteria;
     int resultadoDado;
-
-
 };
 
 #endif  // JUGADOR_H

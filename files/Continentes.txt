@@ -3,4 +3,4 @@
 3,Europa,7
 4,Africa,6
 5,Asia,12
-6,Australia,4
+6,Ocenia,4
