@@ -9,7 +9,7 @@ using namespace std;
 
 class Continente {
 public:
-    string codigo;
+    int codigo;
     string nombre;
     int cantPaises;
     vector<Pais> paises;

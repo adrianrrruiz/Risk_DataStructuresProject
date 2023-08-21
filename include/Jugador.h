@@ -9,10 +9,14 @@ using namespace std;
 
 class Jugador {
 public:
+    bool operator<(const Jugador& otroJugador) const;
     string color;
     string nombre;
     vector<Pais> territorios;
     int infanteria;
+    int resultadoDado;
+
+
 };
 
 #endif  // JUGADOR_H

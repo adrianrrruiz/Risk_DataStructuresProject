@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <ctime>
+#include <cstdlib>
 #include "include/Risk.h"
 
 using namespace std;
@@ -11,6 +13,7 @@ void imprimirListaComandos();
 void separarCadena(string &linea, string &comando, string &param1,string &param2);
 
 int main(int argc, char* argv[]) {
+    srand(time(nullptr));
     string linea;
     string comando;
     string param1;

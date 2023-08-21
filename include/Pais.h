@@ -8,8 +8,8 @@ using namespace std;
 
 class Pais {
 public:
-    string codigoContinente;
-    string codigo;
+    int codigoContinente;
+    int codigo;
     string nombre;
     vector<int> relaciones;
     int infanteria;

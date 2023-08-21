@@ -56,7 +56,7 @@ void Risk::leerPaises(Risk &juego){
 }
 
 void Risk::leerRelaciones(Risk &juego) {
-    ifstream archivo("Files/Relaciones.txt");
+    ifstream archivo("Files\\Relaciones.txt");
     string linea;
     int codigo;
 
@@ -69,7 +69,7 @@ void Risk::leerRelaciones(Risk &juego) {
 
             for (int i = 0; i < juego.continentes.size(); i++) {
                 for (int j = 0; j < juego.continentes[i].paises.size(); j++) {
-                    if (juego.continentes[i].paises[j].codigo.compare(to_string(codigo))) {
+                    if (juego.continentes[i].paises[j].codigo == codigo) {
                         int relacionado;
                         while (iss >> relacionado) {
                             juego.continentes[i].paises[j].relaciones.push_back(relacionado);
@@ -98,10 +98,29 @@ void Risk::imprimirInformacion(Risk &juego){
         }
     }
 }
-void Risk::imprimirColores(Risk &juego){
-    cout<< "escoja el color de su ejercito\n";
+string Risk::imprimirColores(Risk &juego){
+    cout<< "escoja el numero de color de su ejercito\n";
+    int num;
     for(int i =0; i<juego.colores.size(); i++){
         cout << i+1 << ": " << juego.colores[i] << endl;
+    }
+    cin>>num;
+    switch(num) {
+        case 1: return juego.colores[0];
+        break;
+        case 2: return juego.colores[1];
+        break;
+        case 3: return juego.colores[2];
+        break;
+        case 4: return juego.colores[3];
+        break;
+        case 5: return juego.colores[4];
+        break;
+        case 6: return juego.colores[5];
+        break;
+        default:
+        cout << "opcion incorrecta\n";
+        break;
     }
 }
 
@@ -117,24 +136,85 @@ void Risk::inicializar(Risk &juego){
     leerContinentes(juego);
     leerPaises(juego);
     leerRelaciones(juego);
-    string aux;
+    
+    string nombre;
+    string color;
+    int infanteriaXJugador,numeroDado;
+
+    Jugador jugador;
     cout <<"ingrese el numero de participantes que jugaran:\n";
     cin >> juego.cantidadJugadores;
+
+    infanteriaXJugador = evaluarInfanteria(juego);
 
     if(juego.cantidadJugadores < 3){
         cout << "Cantidad erronea, el juego necesita de 3 - 6 jugadores\n";
         return;
     }
+    //ingreso de los participantes al juego
     else{
         for(int i=0; i<juego.cantidadJugadores;i++){
             cout<<"ingrese el nombre de los participante: \n";
-            cin>>aux;
-            juego.jugadores[i].nombre = aux;
-            imprimirColores(juego);
-            cin>>juego.jugadores[i].color;
-            eliminarColor(juego,juego.jugadores[i].color);
-        } 
+            cin>>nombre;
+            color=imprimirColores(juego);
+            eliminarColor(juego,color);
+            cout<<"lance el dado para ver el orden a la hora de escoger territorio\n ";
+            system("pause");
+            numeroDado= lanzamientoDado();
+            cout << "saco un: " << numeroDado << endl;
+            
+            jugador.nombre=nombre;
+            jugador.color=color;
+            jugador.infanteria=infanteriaXJugador;
+            jugador.resultadoDado=numeroDado;
+            
+            juego.jugadores.push_back(jugador);
+        }
+        imprimirJugadores(juego); 
     }
+    //elección de territorios
+    for(int i=0;i<42;i++){
 
+    }
+}
 
+void Risk::imprimirJugadores(Risk &juego){
+    for(const Jugador &jugador : juego.jugadores){
+            cout <<"Jugador: " << jugador.nombre <<" Color: "<<jugador.color << "\n";
+    }
+}
+
+int Risk::evaluarInfanteria(Risk &juego){
+    switch(juego.cantidadJugadores){
+        case 3:
+            return 35;
+            break;
+        case 4:
+            return 30;
+            break;
+        case 5:
+            return 25;
+            break;
+        case 6:
+            return 20;
+            break;
+    }
+}
+
+int Risk::elegirPais(Risk &juego){
+    int codigoTerritorio;
+        cout<< "escoja el Territorio que desea ocupar\n";
+        for(const Continente continente : juego.continentes){
+            cout<<"Continente: " << continente.nombre << endl;
+            for(const Pais pais : continente.paises){
+                cout <<"\t"<< pais.codigo << ": " << pais.nombre << endl;
+            }
+        }
+        cin >> codigoTerritorio;
+        return codigoTerritorio;
+}
+
+int Risk::lanzamientoDado(){
+        int resultado = rand() % 6 + 1;
+        return resultado;
 }
