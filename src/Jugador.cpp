@@ -142,3 +142,11 @@ bool Jugador::poseeContinenteOceania(Jugador& jugador) const {
         }
         return true;
 }
+
+void Jugador::eliminarTerritorio(int codigo) {
+    territorios.erase(remove_if(territorios.begin(), territorios.end(),
+        [codigo](const Pais& pais) {
+            return pais.codigo == codigo;
+        }), territorios.end());
+    cout << "El territorio: " << codigo << " se elimino del jugador " << nombre << endl;
+}

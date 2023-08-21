@@ -84,6 +84,22 @@ void Risk::leerRelaciones(Risk &juego) {
     }
     archivo.close();
 }
+void Risk::leerDistribucionCartas(Risk &juego) {
+    ifstream archivo("Files\\cartas.txt");
+    
+    if (archivo.is_open()){
+        string linea;
+        while (getline(archivo, linea)) {
+            istringstream iss(linea);
+            Carta carta;
+            iss >> carta.codigoPais;
+            iss.ignore(); // Ignorar la coma
+            std::getline(iss, carta.figura);
+            juego.cartas.push_back(carta);
+        }
+        archivo.close();
+    }
+}
 
 void Risk::imprimirInformacion(Risk &juego){
 
@@ -142,6 +158,7 @@ bool Risk::inicializar(Risk &juego){
     leerPaises(juego);
     leerRelaciones(juego);
     crearPaisesDisponibles(juego);
+    leerDistribucionCartas(juego);
     juego.caballoDorado = 4;
     
     string nombre;
@@ -371,11 +388,18 @@ bool Risk::turno(Risk &juego, string id){
                     codigoPaisAtacar=escogerPaisAAtacar(juego,jugador,paisAtaque);
                     Pais& paisDefensa = delvolverPaisAAtacar(juego,codigoPaisAtacar);
                     Jugador& jugadorDefensa = jugadorDefiende(juego,codigoPaisAtacar);
-                    ataque(paisAtaque,paisDefensa,jugador,jugadorDefensa);
+                    if(jugador.nombre.compare(jugadorDefensa.nombre)==0){
+                        cout << "Territorio perteneciente a usted, no puede atacarlo\n";
+                    }
+                    else{
+                        ataque(paisAtaque,paisDefensa,jugador,jugadorDefensa);
+                        Carta cartaNueva = cartaAleatoria(juego);
+                        jugador.cartas.push_back(cartaNueva);
+                        borrarCarta(juego,cartaNueva);
+                    }  
                 }
                 else{
                     cout<<"no puedes atacar desde este terrotorio porque solo tienes una tropa en el\n";
-                    break;
                 }   
             }
         }
@@ -528,8 +552,18 @@ void Risk::ataque(Pais & ataca, Pais & defiende, Jugador& atacante, Jugador& def
     cout << "Victorias del atacante: " << victoriasAtacante << "\n";
     cout << "Victorias del defensor: " << victoriasDefensor << "\n";
 
-    ataca.infanteria += tropasAtacantes - victoriasAtacante;
+    //ataca.infanteria += tropasAtacantes - victoriasAtacante;
     defiende.infanteria += tropasDefensa - victoriasDefensor;
+
+    if(defiende.infanteria > 0){
+        ataca.infanteria += tropasAtacantes - victoriasAtacante;
+    }
+    else{
+        int tropasSobrevivientes = tropasAtacantes - victoriasAtacante;
+        defiende.infanteria = tropasSobrevivientes;
+        atacante.territorios.push_back(defiende);
+        defensor.eliminarTerritorio(defiende.codigo);
+    }
 }
 Jugador& Risk::jugadorDefiende(Risk &juego, int codigo){
     int jugador ;
@@ -625,4 +659,18 @@ vector<int> Risk::dados(int cantidad){
         dados.push_back(resultado);
     }
     return dados;
+}
+
+Carta Risk::cartaAleatoria(Risk& juego){
+    int numeroAleatorio = std::rand() % 42 + 1;
+    return juego.cartas[numeroAleatorio];
+}
+
+void Risk::borrarCarta(Risk& juego, Carta carta){
+    for (auto it = juego.cartas.begin(); it != juego.cartas.end(); ++it) {
+        if (it->codigoPais == carta.codigoPais) {
+            juego.cartas.erase(it);
+            break;
+        }
+    }
 }

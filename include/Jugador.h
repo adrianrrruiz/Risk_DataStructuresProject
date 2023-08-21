@@ -5,6 +5,7 @@
 #include <vector>
 #include <iomanip> 
 #include "Pais.h"
+#include "Carta.h"
 
 using namespace std;
 
@@ -22,9 +23,12 @@ public:
     bool poseeContinenteAsia(Jugador& jugador) const;
     bool poseeContinenteOceania(Jugador& jugador) const;
     Pais& paisSeleccionado(Jugador& jugador,int codigo);
+    void eliminarTerritorio(int codigo);
+    
     string color;
     string nombre;
     vector<Pais> territorios;
+    vector<Carta> cartas;
     int infanteria;
     int resultadoDado;
 };

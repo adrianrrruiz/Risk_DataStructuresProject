@@ -17,6 +17,7 @@ using namespace std;
 class Risk {
 public:
     //funciones inicializar//
+    void leerDistribucionCartas(Risk &juego);
     bool cantidadValida(Risk &juego);
     void eliminarColor(Risk &juego,string color);
     string imprimirColores(Risk &juego);
@@ -43,6 +44,8 @@ public:
     Pais& delvolverPaisAAtacar(Risk &juego, int codigo);
     int cantidadTropasAtacantes(Pais &atacante);
     int cantidadTropasDefensoras(Pais &defensor);
+    Carta cartaAleatoria(Risk& juego);
+    void borrarCarta(Risk& juego,Carta carta);
     vector<int> dados(int cantidad);
     vector<Continente> continentes;
     vector<Pais> paisesDisponibles;
