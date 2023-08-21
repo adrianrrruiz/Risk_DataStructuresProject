@@ -3,13 +3,15 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
+
 
 using namespace std;
 
 class Carta {
 public:
     string figura;
-    string codigoPais;
+    int codigoPais;
 };
 
 #endif  // CARTA_H

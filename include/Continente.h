@@ -3,13 +3,15 @@
 
 #include <iostream>
 #include <vector>
-#include <Pais.h>
+#include <string>
+
+#include "Pais.h"
 
 using namespace std;
 
 class Continente {
 public:
-    string codigo;
+    int codigo;
     string nombre;
     int cantPaises;
     vector<Pais> paises;

@@ -1,1 +1,1 @@
-#include "..\\include\\Carta.h"
+#include "../include/Carta.h"

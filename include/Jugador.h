@@ -3,16 +3,31 @@
 
 #include <iostream>
 #include <vector>
-#include <Pais.h>
+#include <string>
+#include <iomanip> 
+#include "Pais.h"
 
 using namespace std;
 
 class Jugador {
 public:
+    bool cantidadSolicitadaValida(Jugador& jugador,int cantidadTropas);
+    bool codigoExiste(Jugador& jugador,int codigo);
+    bool operator<(const Jugador& otroJugador) const;
+    void imprimirTerritorios(Jugador &jugador);
+    void aumentarInfanteria(Jugador& otroJugador,int codigo, int cantidad);
+    bool poseeContinenteAmericaNorte(Jugador& jugador) const;
+    bool poseeContinenteAmericaSur(Jugador& jugador) const;
+    bool poseeContinenteEuropa(Jugador& jugador) const;
+    bool poseeContinenteAfrica(Jugador& jugador) const;
+    bool poseeContinenteAsia(Jugador& jugador) const;
+    bool poseeContinenteOceania(Jugador& jugador) const;
+    Pais& paisSeleccionado(Jugador& jugador,int codigo);
     string color;
     string nombre;
     vector<Pais> territorios;
     int infanteria;
+    int resultadoDado;
 };
 
 #endif  // JUGADOR_H
