@@ -7,6 +7,7 @@
 #include "Pais.h"
 #include "Carta.h"
 
+
 using namespace std;
 
 class Jugador {
@@ -27,6 +28,7 @@ public:
     void imprimirCartas(Jugador &jugador);
     void eliminarCartaPorCodigo(int codigo);
     Carta retornarCarta(Jugador& jugador, int codigo);
+
     string color;
     string nombre;
     vector<Pais> territorios;

@@ -27,6 +27,7 @@ int main(int argc, char* argv[]) {
     do {
         cout << "$ ";
         getline(cin, linea);
+        system("cls");
         separarCadena(linea,comando,param1,param2);
 
         if (comando == "help" || comando == "ayuda") {
