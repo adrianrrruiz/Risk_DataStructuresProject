@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
+
 #include "Pais.h"
 
 using namespace std;
