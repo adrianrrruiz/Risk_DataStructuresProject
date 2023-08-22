@@ -190,9 +190,9 @@ bool Risk::inicializar(Risk &juego){
             cin>>nombre;
             color=imprimirColores(juego);
             eliminarColor(juego,color);
-            cout<<"lance el dado para ver el orden a la hora de escoger territorio\n ";
+            cout<<"Lance el dado para ver el orden a la hora de escoger territorio\n ";
             numeroDado= lanzamientoDado();
-            cout << "saco un: " << numeroDado << endl;
+            cout << "Saco un: " << numeroDado << endl;
             
             jugador.nombre=nombre;
             jugador.color=color;
@@ -463,10 +463,9 @@ bool Risk::turno(Risk &juego, string id){
     else{
         cout << "jugador no existe\n";
     }
-
     return false;
 }
-      
+
 void Risk::redistribuirTropas(Risk& juego, Jugador& jugador){
     int codigoPrimerTerritorio, codigoSegundoTerritorio, cantTropas;
     bool redistribucionExitosa = false;
