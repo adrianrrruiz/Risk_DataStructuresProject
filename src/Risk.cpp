@@ -13,7 +13,6 @@ void Risk::leerContinentes(Risk &juego) {
                 isContinente.ignore();
                 getline(isContinente, nombre, ',');
                 isContinente >> numeroPaises;
-
                 Continente continente;
                 continente.codigo = codigo;
                 continente.nombre = nombre;
@@ -590,7 +589,6 @@ bool Risk::ataque(Pais & ataca, Pais & defiende, Jugador& atacante, Jugador& def
 
     vector<int>dadosRojos =dados(tropasAtacantes);
     vector<int>dadosBlancos =dados(tropasDefensa);
-
     sort(dadosRojos.begin(), dadosRojos.end(),greater<int>());
     sort(dadosBlancos.begin(), dadosBlancos.end(),greater<int>());
 
