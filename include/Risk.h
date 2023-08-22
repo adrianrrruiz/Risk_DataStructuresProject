@@ -35,6 +35,7 @@ public:
     void ordenarJugadores(vector<Jugador> &jugadores);
     bool turno(Risk &juego, string id);
     int reclamarTropasObligatorias(Risk& juego, Jugador &jugador);
+    void redistribuirTropas(Risk& juego, Jugador& jugador);
     int escogerPaisAAtacar(Risk &juego,Jugador &jugador,Pais &pais);
     Jugador& jugadorEnTurno(Risk &juego, string id);
     bool paisPosibleAAtacar(vector <int> &posiblesAtaques, int codigo);

@@ -151,8 +151,8 @@ bool Risk::inicializar(Risk &juego){
     //guardar cantidad de participantes
     Jugador jugador;
     do{
-        cout <<"ingrese el numero de participantes que jugaran:\n";
-        cout <<"recuerde que el juego es de 3-6 participantes\n";
+        cout <<"Ingrese el numero de participantes que jugaran:\n";
+        cout <<"(Recuerde que el juego es de 3-6 participantes)\n";
         cout << "$ ";
         cin >> juego.cantidadJugadores;
         system("cls");
@@ -163,15 +163,15 @@ bool Risk::inicializar(Risk &juego){
 
     //ingreso de los participantes al juego
         for(int i=0; i<juego.cantidadJugadores;i++){
-            cout<<"ingrese el nombre del participante: \n";
+            cout<<"Ingrese el nombre del participante: \n";
             cout << "$ ";
             cin>>nombre;
             color=imprimirColores(juego);
             eliminarColor(juego,color);
-            cout<<"lance el dado para ver el orden a la hora de escoger territorio\n ";
+            cout<<"Lance el dado para ver el orden a la hora de escoger territorio\n ";
             system("pause");
             numeroDado= lanzamientoDado();
-            cout << "saco un: " << numeroDado << endl;
+            cout << "Saco un: " << numeroDado << endl;
             system("pause");
             system("cls");
             
@@ -215,7 +215,7 @@ bool Risk::inicializar(Risk &juego){
             cout << "$ ";
             cin>> codigoAux;
             if(juego.jugadores[i].codigoExiste(juego.jugadores[i], codigoAux)){
-                cout << "cuantas deseas repatir?\n";
+                cout << "Cuantas deseas repatir?\n";
                 cout << "$ ";
                 cin>> cantidadTropas;
                 system("cls");
@@ -223,11 +223,11 @@ bool Risk::inicializar(Risk &juego){
                     juego.jugadores[i].aumentarInfanteria(juego.jugadores[i],codigoAux,cantidadTropas);
                 }
                 else{
-                    cout << "cantidad erronea de tropas\n";
+                    cout << "---- Cantidad erronea de tropas ----\n";
                 }
             }
             else{
-                cout << "territorio no en su propiedad\n";
+                cout << "---- Territorio no en su propiedad ----\n";
             }    
         }while(juego.jugadores[i].infanteria!=0);
     }
@@ -322,12 +322,12 @@ bool Risk::turno(Risk &juego, string id){
     int codigoPaisAtacar;
     bool menuAtaque=true;
     Jugador& jugador = jugadorEnTurno(juego,id);
-    cout << "turno jugador: " << jugador.nombre << endl;
+    cout << "Turno jugador: " << jugador.nombre << endl;
     cout << "Obtener y ubicar nuevas unidades de ejercito.\n" ;
      
     //reclamar tropas obligatorias
     int refuerzo = reclamarTropasObligatorias(juego,jugador);
-    cout << "tropas asignadas: " << refuerzo << endl;
+    cout << "Tropas asignadas: " << refuerzo << endl;
     jugador.infanteria+=refuerzo;
 
     //reclamar tropas por cartas       
@@ -353,8 +353,8 @@ bool Risk::turno(Risk &juego, string id){
     do {
         cout << "Menu de Ataque\n";
         cout << "Que desea hacer?\n";
-        cout << "1: atacar un territorio\n";
-        cout << "0: dejar de atacar\n";
+        cout << "1: ATACAR un territorio\n";
+        cout << "0: Dejar de ATACAR\n";
         cout << "$ ";
         
         cin >> respuesta;
@@ -374,7 +374,7 @@ bool Risk::turno(Risk &juego, string id){
                     ataque(paisAtaque,paisDefensa,jugador,jugadorDefensa);
                 }
                 else{
-                    cout<<"no puedes atacar desde este terrotorio porque solo tienes una tropa en el\n";
+                    cout<<"No puedes atacar desde este territorio porque solo tienes una tropa en el\n";
                     break;
                 }   
             }
@@ -386,7 +386,59 @@ bool Risk::turno(Risk &juego, string id){
             cout << "Respuesta no válida.\n";
         }
     } while (menuAtaque);
+    system("cls");
+    do{
+        cout << "Desea redistribuir sus tropas? (1:SI, 0:NO)\n";
+        cout << "$ ";
+        cin >> respuesta;
+        if(respuesta == 1){
+            redistribuirTropas(juego, jugador);
+        }
+    }while(respuesta != 0);
+    
+}
 
+void Risk::redistribuirTropas(Risk& juego, Jugador& jugador){
+    int codigoPrimerTerritorio, codigoSegundoTerritorio, cantTropas;
+    bool redistribucionExitosa = false;
+    do{
+        cout << "====== REDISTRIBUCION DE TROPAS ======\n\n";
+        cout << "Asi se encuentran ubicadas tus tropas en el mapa:\n";
+        jugador.imprimirTerritorios(jugador);
+        cout << "Ingrese codigo del territorio al que va a moverle tropas: \n";
+        cout << "$ ";
+        cin>> codigoPrimerTerritorio;
+        if(jugador.codigoExiste(jugador, codigoPrimerTerritorio)){
+            cout << "Cuantas tropas deseas mover?\n";
+            cout << "$ ";
+            cin>> cantTropas;
+            if(jugador.validarTropasPais(jugador, codigoPrimerTerritorio, cantTropas)){
+                cout << "Ingrese codigo del territorio a donde va a mover las tropas: \n";
+                cout << "$ ";
+                cin >> codigoSegundoTerritorio;
+                if(jugador.codigoExiste(jugador, codigoSegundoTerritorio)){
+                    if(jugador.relacionConPais(jugador, codigoPrimerTerritorio, codigoSegundoTerritorio)){
+                        if(jugador.restarInfanteria(jugador, codigoPrimerTerritorio, cantTropas)){
+                            jugador.aumentarInfanteria(jugador,codigoSegundoTerritorio,cantTropas);
+                            jugador.imprimirTerritorios(jugador);
+                            redistribucionExitosa = true;
+                        }
+                    }else{
+                        cout << "---- Los territorios no se relacionan ----\n";
+                        cout << "Desea salir? (1:SI, 0:NO)\n";
+                        cout << "$ ";
+                        cin >> redistribucionExitosa;
+                    }
+                }else{
+                    cout << "---- Territorio destino no es de su propiedad ----\n";
+                }
+            }else{
+                cout << "---- No posee la cantidad de tropas que quiere mover ----\n";
+            }
+        }else{
+            cout << "---- Territorio no en su propiedad ----\n";
+        }    
+    }while(!redistribucionExitosa);
 }
 
 int Risk::reclamarTropasObligatorias(Risk& juego, Jugador &jugador){
@@ -430,7 +482,7 @@ Jugador& Risk::jugadorEnTurno(Risk &juego, string id){
             return juego.jugadores[i];
         }
     }
-    cout<<"id erroneo\n";
+    cout<<"---- El jugador no existe ----\n";
 }
 
 int Risk::escogerPaisAAtacar(Risk &juego,Jugador &jugador,Pais &pais){
