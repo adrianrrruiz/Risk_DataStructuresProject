@@ -451,18 +451,19 @@ bool Risk::turno(Risk &juego, string id){
                 cout << "Respuesta no válida.\n";
             }
         } while (menuAtaque);
+        do{
+            cout << "Desea redistribuir sus tropas? (1:SI, 0:NO)\n";
+            cout << "$ ";
+            cin >> respuesta;
+            if(respuesta == 1){
+                redistribuirTropas(juego, jugador);
+            }
+        }while(respuesta != 0);
     }
     else{
         cout << "jugador no existe\n";
     }
-    do{
-        cout << "Desea redistribuir sus tropas? (1:SI, 0:NO)\n";
-        cout << "$ ";
-        cin >> respuesta;
-        if(respuesta == 1){
-            redistribuirTropas(juego, jugador);
-        }
-    }while(respuesta != 0);
+
     return false;
 }
       
