@@ -148,7 +148,6 @@ int main(int argc, char* argv[]) {
         else {
             cout << "\nComando invalido. Pruebe 'help' para ver todos los comandos.\n\n";
         }
-
     } while (enEjecucion);
 
     return 0;
