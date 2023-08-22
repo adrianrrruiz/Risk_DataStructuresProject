@@ -17,6 +17,7 @@ using namespace std;
 class Risk {
 public:
     //funciones inicializar//
+    void leerDistribucionCartas(Risk &juego);
     bool cantidadValida(Risk &juego);
     void eliminarColor(Risk &juego,string color);
     string imprimirColores(Risk &juego);
@@ -39,11 +40,20 @@ public:
     int escogerPaisAAtacar(Risk &juego,Jugador &jugador,Pais &pais);
     Jugador& jugadorEnTurno(Risk &juego, string id);
     bool paisPosibleAAtacar(vector <int> &posiblesAtaques, int codigo);
-    void ataque(Pais & ataca, Pais & defiende, Jugador& atacante, Jugador& defensor);
+    bool ataque(Pais & ataca, Pais & defiende, Jugador& atacante, Jugador& defensor);
     Jugador& jugadorDefiende(Risk &juego, int codigo);
     Pais& delvolverPaisAAtacar(Risk &juego, int codigo);
     int cantidadTropasAtacantes(Pais &atacante);
     int cantidadTropasDefensoras(Pais &defensor);
+    Carta cartaAleatoria(Risk& juego);
+    void borrarCarta(Risk& juego,Carta carta);
+    bool jugadorExiste(Risk &juego, string id);
+    void intercambiarCartasXRefuerzos(Risk& juego, Jugador& jugador);
+    bool validarSeleccionCartas(Risk& juego,Carta& c1,Carta& c2,Carta& c3);
+    void actualizarCaballoDorado(Risk &juego);
+    void anadirInfanteriaSiCoincideConcarta(Jugador &jugador, int codigo);
+    void transferirCartas(Jugador& ganador, Jugador& perdedor);
+    void eliminarJugador(Risk& juego,const string& nombre);
     vector<int> dados(int cantidad);
     vector<Continente> continentes;
     vector<Pais> paisesDisponibles;

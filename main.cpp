@@ -79,7 +79,7 @@ int main(int argc, char* argv[]) {
                     cout << "\nEsta partida ya tuvo un ganador :(\n\n";
                 }
                 else{
-                    juego.turno(juego,param1);
+                    jugando = (!juego.turno(juego,param1));
                 }
             }
         }
