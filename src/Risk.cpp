@@ -463,10 +463,9 @@ bool Risk::turno(Risk &juego, string id){
     else{
         cout << "jugador no existe\n";
     }
-
     return false;
 }
-      
+
 void Risk::redistribuirTropas(Risk& juego, Jugador& jugador){
     int codigoPrimerTerritorio, codigoSegundoTerritorio, cantTropas;
     bool redistribucionExitosa = false;
