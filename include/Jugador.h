@@ -14,9 +14,12 @@ class Jugador {
 public:
     bool cantidadSolicitadaValida(Jugador& jugador,int cantidadTropas);
     bool codigoExiste(Jugador& jugador,int codigo);
+    bool validarTropasPais(Jugador& jugador, int codigoTerritorio, int cantTropas);
     bool operator<(const Jugador& otroJugador) const;
     void imprimirTerritorios(Jugador &jugador);
     void aumentarInfanteria(Jugador& otroJugador,int codigo, int cantidad);
+    bool restarInfanteria(Jugador& jugador,int codigo,int cantidad);
+    bool relacionConPais(Jugador& jugador, int codigoPrimerTerritorio, int codigoSegundoTerritorio);
     bool poseeContinenteAmericaNorte(Jugador& jugador) const;
     bool poseeContinenteAmericaSur(Jugador& jugador) const;
     bool poseeContinenteEuropa(Jugador& jugador) const;
