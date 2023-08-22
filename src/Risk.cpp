@@ -338,79 +338,98 @@ bool Risk::turno(Risk &juego, string id){
     int codigoAux;
     int codigoPaisAtacar;
     bool menuAtaque=true;
+
+    if(jugadorExiste(juego,id)){
+
     Jugador& jugador = jugadorEnTurno(juego,id);
-    cout << "turno jugador: " << jugador.nombre << endl;
-    cout << "Obtener y ubicar nuevas unidades de ejercito.\n" ;
-     
-    //reclamar tropas obligatorias
-    int refuerzo = reclamarTropasObligatorias(juego,jugador);
-    cout << "tropas asignadas: " << refuerzo << endl;
-    jugador.infanteria+=refuerzo;
-
-    //reclamar tropas por cartas       
-    while (true) {
-        cout << "Desea intercambiar cartas por tropas? (1 para si / 0 para no):\n";
-        cout << "$ ";
-        cin >> respuesta;
+        cout << "turno jugador: " << jugador.nombre << endl;
+        cout << "Obtener y ubicar nuevas unidades de ejercito.\n" ;
         
-        if (respuesta == 1) {
-            //funcion de intercambio
-            break;
-        } else if (respuesta == 0) {
-            cout << "No se realizara el intercambio.\n";
-            break;
-        } else {
-            cout << "Respuesta no valida. Por favor, ingrese 1 para 'si' o 0 para 'no'.\n" ;
-        }
-    }
-    system("pause");
-    system("cls");
+        //reclamar tropas obligatorias
+        int refuerzo = reclamarTropasObligatorias(juego,jugador);
+        cout << "tropas asignadas: " << refuerzo << endl;
+        jugador.infanteria+=refuerzo;
 
-    //Menu de ataque
-    do {
-        cout << "Menu de Ataque\n";
-        cout << "Que desea hacer?\n";
-        cout << "1: atacar un territorio\n";
-        cout << "0: dejar de atacar\n";
-        cout << "$ ";
-        
-        cin >> respuesta;
-    
-        if (respuesta == 1) {
-            cout << "Elige un territorio propio el cual limite con el territorio que desees atacar.\n";
-            jugador.imprimirTerritorios(jugador);
+        //reclamar tropas por cartas       
+        while (true) {
+            cout << "Desea intercambiar cartas por tropas? (1 para si / 0 para no):\n";
             cout << "$ ";
-            cin >> codigoAux;
+            cin >> respuesta;
             
-            if (jugador.codigoExiste(jugador, codigoAux)) {
-                Pais& paisAtaque = jugador.paisSeleccionado(jugador,codigoAux);
-                if(paisAtaque.infanteria>1){
-                    codigoPaisAtacar=escogerPaisAAtacar(juego,jugador,paisAtaque);
-                    Pais& paisDefensa = delvolverPaisAAtacar(juego,codigoPaisAtacar);
-                    Jugador& jugadorDefensa = jugadorDefiende(juego,codigoPaisAtacar);
-                    if(jugador.nombre.compare(jugadorDefensa.nombre)==0){
-                        cout << "Territorio perteneciente a usted, no puede atacarlo\n";
-                    }
-                    else{
-                        ataque(paisAtaque,paisDefensa,jugador,jugadorDefensa);
-                        Carta cartaNueva = cartaAleatoria(juego);
-                        jugador.cartas.push_back(cartaNueva);
-                        borrarCarta(juego,cartaNueva);
-                    }  
+            if (respuesta == 1) {
+                if(jugador.cartas.size()>=3){
+                    intercambiarCartasXRefuerzos(juego,jugador);
                 }
                 else{
-                    cout<<"no puedes atacar desde este terrotorio porque solo tienes una tropa en el\n";
-                }   
+                    cout << "No tienes suficientes cartas para realizar el intercambio\n";
+                }
+                
+                break;
+            } else if (respuesta == 0) {
+                cout << "No se realizara el intercambio.\n";
+                break;
+            } else {
+                cout << "Respuesta no valida. Por favor, ingrese 1 para 'si' o 0 para 'no'.\n" ;
             }
         }
-        else if (respuesta == 0) {
-            menuAtaque = false;
-        }
-        else {
-            cout << "Respuesta no válida.\n";
-        }
-    } while (menuAtaque);
+        system("pause");
+        system("cls");
 
+        //Menu de ataque
+        do {
+            cout << "Menu de Ataque\n";
+            cout << "Que desea hacer?\n";
+            cout << "1: atacar un territorio\n";
+            cout << "0: dejar de atacar\n";
+            cout << "$ ";
+            
+            cin >> respuesta;
+        
+            if (respuesta == 1) {
+                cout << "Elige un territorio propio el cual limite con el territorio que desees atacar.\n";
+                jugador.imprimirTerritorios(jugador);
+                cout << "$ ";
+                cin >> codigoAux;
+                
+                if (jugador.codigoExiste(jugador, codigoAux)) {
+                    Pais& paisAtaque = jugador.paisSeleccionado(jugador,codigoAux);
+                    if(paisAtaque.infanteria>1){
+                        codigoPaisAtacar=escogerPaisAAtacar(juego,jugador,paisAtaque);
+                        Pais& paisDefensa = delvolverPaisAAtacar(juego,codigoPaisAtacar);
+                        Jugador& jugadorDefensa = jugadorDefiende(juego,codigoPaisAtacar);
+                        if(jugador.nombre.compare(jugadorDefensa.nombre)==0){
+                            cout << "Territorio perteneciente a usted, no puede atacarlo\n";
+                        }
+                        else{
+                            bool conquisto = ataque(paisAtaque,paisDefensa,jugador,jugadorDefensa);
+                            if(conquisto){
+                                Carta cartaNueva = cartaAleatoria(juego);
+                                jugador.cartas.push_back(cartaNueva);
+                                borrarCarta(juego,cartaNueva);
+                            }
+
+                            if(jugadorDefensa.territorios.size()==0){
+                                transferirCartas(jugador,jugadorDefensa);
+                                eliminarJugador(juego,jugadorDefensa.nombre);
+                            }
+                        }  
+                    }
+                    else{
+                        cout<<"no puedes atacar desde este terrotorio porque solo tienes una tropa en el\n";
+                    }   
+                }
+            }
+            else if (respuesta == 0) {
+                menuAtaque = false;
+            }
+            else {
+                cout << "Respuesta no válida.\n";
+            }
+        } while (menuAtaque);
+    }
+    else{
+        cout << "jugador no existe\n";
+    }
 }
 
 int Risk::reclamarTropasObligatorias(Risk& juego, Jugador &jugador){
@@ -447,6 +466,16 @@ int Risk::reclamarTropasObligatorias(Risk& juego, Jugador &jugador){
     }
     return nuevasTropas;
 }
+
+bool Risk::jugadorExiste(Risk &juego, string id){
+    for(int i = 0; i < juego.jugadores.size();i++){
+        if(juego.jugadores[i].nombre.compare(id)==0){
+            return true;
+        }
+    }
+    return false;
+}
+
 
 Jugador& Risk::jugadorEnTurno(Risk &juego, string id){
     for(int i = 0; i < juego.jugadores.size();i++){
@@ -520,7 +549,8 @@ Pais& Risk::delvolverPaisAAtacar(Risk &juego, int codigo){
         }
     }
 }
-void Risk::ataque(Pais & ataca, Pais & defiende, Jugador& atacante, Jugador& defensor){
+bool Risk::ataque(Pais & ataca, Pais & defiende, Jugador& atacante, Jugador& defensor){
+    bool conquisto = false;
     cout << "con cuantas tropas deseas atacar "<< atacante.nombre<<" ?\n";
     int tropasAtacantes = cantidadTropasAtacantes(ataca);
     cout << "con cuantas tropas deseas defender "<< defensor.nombre<<" ?\n";
@@ -552,18 +582,30 @@ void Risk::ataque(Pais & ataca, Pais & defiende, Jugador& atacante, Jugador& def
     cout << "Victorias del atacante: " << victoriasAtacante << "\n";
     cout << "Victorias del defensor: " << victoriasDefensor << "\n";
 
-    //ataca.infanteria += tropasAtacantes - victoriasAtacante;
     defiende.infanteria += tropasDefensa - victoriasDefensor;
 
     if(defiende.infanteria > 0){
         ataca.infanteria += tropasAtacantes - victoriasAtacante;
     }
     else{
+        conquisto = true;
         int tropasSobrevivientes = tropasAtacantes - victoriasAtacante;
         defiende.infanteria = tropasSobrevivientes;
         atacante.territorios.push_back(defiende);
         defensor.eliminarTerritorio(defiende.codigo);
     }
+    return conquisto;
+}
+void Risk::eliminarJugador(Risk& juego,const string& nombre) {
+        juego.jugadores.erase(std::remove_if(juego.jugadores.begin(), juego.jugadores.end(),
+            [&nombre](const Jugador& jugador) {
+                return jugador.nombre == nombre;
+            }), juego.jugadores.end());
+    }
+
+void Risk::transferirCartas(Jugador& ganador, Jugador& perdedor) {
+        ganador.cartas.insert(ganador.cartas.end(), perdedor.cartas.begin(), perdedor.cartas.end());
+        perdedor.cartas.clear();
 }
 Jugador& Risk::jugadorDefiende(Risk &juego, int codigo){
     int jugador ;
@@ -673,4 +715,73 @@ void Risk::borrarCarta(Risk& juego, Carta carta){
             break;
         }
     }
+}
+
+void Risk::intercambiarCartasXRefuerzos(Risk& juego, Jugador& jugador){
+    Carta carta1, carta2, carta3;
+    int codigoCarta1, codigoCarta2, codigoCarta3;
+    jugador.imprimirCartas(jugador);
+    cout<< "seleccione 1 por 1 el codigo de las tres cartas que desea intercambiar\n";
+    cin>>codigoCarta1;
+    cin>>codigoCarta2;
+    cin>>codigoCarta3;
+    carta1 = jugador.retornarCarta(jugador,codigoCarta1);
+    carta2 = jugador.retornarCarta(jugador,codigoCarta2);
+    carta3 = jugador.retornarCarta(jugador,codigoCarta3);
+
+    bool cumple =validarSeleccionCartas(juego,carta1,carta2,carta3);
+
+    if(cumple){
+        jugador.infanteria=+juego.caballoDorado;
+        anadirInfanteriaSiCoincideConcarta(jugador,codigoCarta1);
+        anadirInfanteriaSiCoincideConcarta(jugador,codigoCarta2);
+        anadirInfanteriaSiCoincideConcarta(jugador,codigoCarta3);
+        cout<<"se añadieron " << juego.caballoDorado << " tropas a su infanteria\n";
+        actualizarCaballoDorado(juego);
+        jugador.eliminarCartaPorCodigo(carta1.codigoPais);
+        jugador.eliminarCartaPorCodigo(carta2.codigoPais);
+        jugador.eliminarCartaPorCodigo(carta3.codigoPais);
+    }
+    else{
+        cout << "cartas no cumplen ningun requisito para ser intercambiadas\n";
+    }
+}
+
+bool Risk::validarSeleccionCartas(Risk& juego,Carta& c1,Carta& c2,Carta& c3){
+    bool figurasIguales = (c1.figura == c2.figura && c2.figura == c3.figura);
+    bool figurasDiferentes = (c1.figura != c2.figura && c2.figura != c3.figura && c1.figura != c3.figura);
+    bool comodinPresente = (c1.figura == "comodin" || c2.figura == "comodin" || c3.figura == "comodin");
+
+    return figurasIguales || figurasDiferentes || (comodinPresente && (figurasIguales || figurasDiferentes));
+}
+
+void Risk::actualizarCaballoDorado(Risk &juego){
+    int valor = juego.caballoDorado;
+
+    if(valor == 4){
+        juego.caballoDorado +=2;
+    }
+    if(valor == 6){
+        juego.caballoDorado +=2;
+    }
+    if(valor == 8){
+        juego.caballoDorado +=2;
+    }
+    if(valor == 10){
+        juego.caballoDorado +=2;
+    }
+    if(valor == 12){
+        juego.caballoDorado +=3;
+    }
+    if(valor >= 15){
+        juego.caballoDorado +=5;
+    }    
+}
+void Risk::anadirInfanteriaSiCoincideConcarta(Jugador &jugador, int codigo){
+        for(int j=0; j < jugador.territorios.size();j++){
+            if(jugador.territorios[j].codigo == codigo){
+                jugador.territorios[j].infanteria+=2;
+                cout << "se insertaron 2 tropas al territorio: " << jugador.territorios[j].nombre << endl;
+            }
+        }
 }

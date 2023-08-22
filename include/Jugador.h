@@ -24,7 +24,9 @@ public:
     bool poseeContinenteOceania(Jugador& jugador) const;
     Pais& paisSeleccionado(Jugador& jugador,int codigo);
     void eliminarTerritorio(int codigo);
-    
+    void imprimirCartas(Jugador &jugador);
+    void eliminarCartaPorCodigo(int codigo);
+    Carta retornarCarta(Jugador& jugador, int codigo);
     string color;
     string nombre;
     vector<Pais> territorios;

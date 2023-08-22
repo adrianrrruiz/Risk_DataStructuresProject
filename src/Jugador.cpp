@@ -150,3 +150,26 @@ void Jugador::eliminarTerritorio(int codigo) {
         }), territorios.end());
     cout << "El territorio: " << codigo << " se elimino del jugador " << nombre << endl;
 }
+
+void Jugador::eliminarCartaPorCodigo(int codigo) {
+        cartas.erase(remove_if(cartas.begin(), cartas.end(),
+            [codigo](const Carta& carta) {
+                return carta.codigoPais == codigo;
+            }), cartas.end());
+    }
+
+void Jugador::imprimirCartas(Jugador& jugador){
+    cout << "Cartas del usuario: " <<jugador.nombre <<"\n";
+    
+    for(int i = 0; i < jugador.cartas.size(); i++){
+        cout << "Pais: "<<jugador.cartas[i].codigoPais << " Figura: " <<jugador.cartas[i].figura;
+    }
+}
+
+Carta Jugador::retornarCarta(Jugador& jugador, int codigo){
+    for(int i = 0; i < jugador.cartas.size(); i++){
+        if(jugador.cartas[i].codigoPais == codigo){
+            return jugador.cartas[i];
+        }
+    }
+}
