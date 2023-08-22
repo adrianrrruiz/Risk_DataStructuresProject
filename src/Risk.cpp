@@ -2,7 +2,7 @@
 
 void Risk::leerContinentes(Risk &juego) {
     try{
-        ifstream file("../files/Continentes.txt");
+        ifstream file("files\\Continentes.txt");
         string linea, nombre;
         int codigo, numeroPaises;
         if (file.is_open()) {
@@ -23,7 +23,7 @@ void Risk::leerContinentes(Risk &juego) {
         file.close();
     }
     catch(exception& e){
-        cout << "ocurrio exception";
+        e.what();
         
     }
     
@@ -31,7 +31,7 @@ void Risk::leerContinentes(Risk &juego) {
 }
 
 void Risk::leerPaises(Risk &juego){
-    ifstream file("../files/Paises.txt");
+    ifstream file("files\\Paises.txt");
     string linea, nombre;
     int codigoContinente, codigo;
 
@@ -62,7 +62,7 @@ void Risk::leerPaises(Risk &juego){
 }
 
 void Risk::leerRelaciones(Risk &juego) {
-    ifstream archivo("../files/Relaciones.txt");
+    ifstream archivo("files\\Relaciones.txt");
     string linea;
     int codigo;
 
@@ -91,7 +91,7 @@ void Risk::leerRelaciones(Risk &juego) {
     archivo.close();
 }
 void Risk::leerDistribucionCartas(Risk &juego) {
-    ifstream archivo("../files/cartas.txt");
+    ifstream archivo("files\\cartas.txt");
     
     if (archivo.is_open()){
         string linea;
