@@ -2,6 +2,7 @@
 #define PAIS_H
 
 #include <iostream>
+#include <algorithm>
 #include <vector>
 #include <string>
 

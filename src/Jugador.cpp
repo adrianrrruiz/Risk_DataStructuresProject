@@ -1,4 +1,4 @@
-#include "../include/Jugador.h"
+#include "..\\include\\Jugador.h"
 
 bool Jugador::operator<(const Jugador& otroJugador) const{
   return resultadoDado < otroJugador.resultadoDado;
@@ -25,6 +25,22 @@ void Jugador::aumentarInfanteria(Jugador& jugador,int codigo,int cantidad){
     }
   }
 }
+
+bool Jugador::restarInfanteria(Jugador& jugador,int codigo,int cantidad){
+  for(int i=0;i< jugador.territorios.size();i++){
+    if(jugador.territorios[i].codigo == codigo){
+        if(jugador.territorios[i].infanteria > 1 && jugador.territorios[i].infanteria - cantidad != 0){
+            jugador.territorios[i].infanteria-=cantidad;
+            jugador.infanteria+=cantidad;
+            return true;
+        }else{
+            cout << "---- Para mover un jugador a otro territorio debe tener minimo 2 tropas ----\n";
+            return false;
+        }
+    }
+  }
+}
+
 bool Jugador::codigoExiste(Jugador& jugador,int codigo){
   for(int i=0;i< jugador.territorios.size();i++){
     if(jugador.territorios[i].codigo == codigo){
@@ -32,6 +48,31 @@ bool Jugador::codigoExiste(Jugador& jugador,int codigo){
     }
   }
   return false;
+}
+
+bool Jugador::validarTropasPais(Jugador& jugador, int codigoTerritorio, int cantTropas){
+    for(int i = 0; i < jugador.territorios.size(); i++){
+        if(codigoTerritorio == jugador.territorios[i].codigo){
+            if(cantTropas <= jugador.territorios[i].infanteria){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
+}
+
+bool Jugador::relacionConPais(Jugador& jugador, int codigoPrimerTerritorio, int codigoSegundoTerritorio){
+    for(int i = 0; i < jugador.territorios.size(); i++){
+        if(codigoPrimerTerritorio == jugador.territorios[i].codigo){
+            for(int j = 0; j < jugador.territorios[i].relaciones.size(); j++){
+                if(jugador.territorios[i].relaciones[j] == codigoSegundoTerritorio){
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
 }
 
 Pais& Jugador::paisSeleccionado(Jugador& jugador,int codigo){
@@ -141,4 +182,35 @@ bool Jugador::poseeContinenteOceania(Jugador& jugador) const {
             }
         }
         return true;
+}
+
+void Jugador::eliminarTerritorio(int codigo) {
+    territorios.erase(remove_if(territorios.begin(), territorios.end(),
+        [codigo](const Pais& pais) {
+            return pais.codigo == codigo;
+        }), territorios.end());
+    cout << "El territorio: " << codigo << " se elimino del jugador " << nombre << endl;
+}
+
+void Jugador::eliminarCartaPorCodigo(int codigo) {
+        cartas.erase(remove_if(cartas.begin(), cartas.end(),
+            [codigo](const Carta& carta) {
+                return carta.codigoPais == codigo;
+            }), cartas.end());
+    }
+
+void Jugador::imprimirCartas(Jugador& jugador){
+    cout << "Cartas del usuario: " <<jugador.nombre <<"\n";
+    
+    for(int i = 0; i < jugador.cartas.size(); i++){
+        cout << "Pais: "<<jugador.cartas[i].codigoPais << " Figura: " <<jugador.cartas[i].figura;
+    }
+}
+
+Carta Jugador::retornarCarta(Jugador& jugador, int codigo){
+    for(int i = 0; i < jugador.cartas.size(); i++){
+        if(jugador.cartas[i].codigoPais == codigo){
+            return jugador.cartas[i];
+        }
+    }
 }

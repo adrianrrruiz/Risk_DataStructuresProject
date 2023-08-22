@@ -33,3 +33,8 @@
 
 # VsCode
 /.vscode
+
+# codeBlocks
+*.cbp
+*.depend
+*.layout

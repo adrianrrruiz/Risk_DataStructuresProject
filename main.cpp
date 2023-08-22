@@ -27,7 +27,6 @@ int main(int argc, char* argv[]) {
     do {
         cout << "$ ";
         getline(cin, linea);
-        system("cls");
         separarCadena(linea,comando,param1,param2);
 
         if (comando == "help" || comando == "ayuda") {
@@ -79,7 +78,7 @@ int main(int argc, char* argv[]) {
                     cout << "\nEsta partida ya tuvo un ganador :(\n\n";
                 }
                 else{
-                    juego.turno(juego,param1);
+                    jugando = (!juego.turno(juego,param1));
                 }
             }
         }
@@ -148,7 +147,6 @@ int main(int argc, char* argv[]) {
         else {
             cout << "\nComando invalido. Pruebe 'help' para ver todos los comandos.\n\n";
         }
-
     } while (enEjecucion);
 
     return 0;
