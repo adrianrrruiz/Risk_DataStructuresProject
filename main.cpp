@@ -44,6 +44,7 @@ int main(int argc, char* argv[]) {
                         inicializado = true;
                         jugando = true;
                     }
+                    cin.ignore();
                 }else {
                     cout << "\nEl juego YA ha sido inicializado!\n\n";
                 }
@@ -79,6 +80,7 @@ int main(int argc, char* argv[]) {
                 }
                 else{
                     jugando = (!juego.turno(juego,param1));
+                    cin.ignore();
                 }
             }
         }

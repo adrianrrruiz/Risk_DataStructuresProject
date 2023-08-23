@@ -59,7 +59,7 @@ public:
     vector<Pais> paisesDisponibles;
     vector<Jugador> jugadores;
     vector <Carta> cartas;
-    vector <string> colores = {"verde", "azul", "rojo", "amarillo", "negro", "gris"};
+    vector <string> colores = {"Verde", "Azul", "Rojo", "Amarillo", "Negro", "Gris"};
     int cantidadJugadores;
     int caballoDorado;
 };
