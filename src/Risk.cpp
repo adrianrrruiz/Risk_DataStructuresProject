@@ -122,7 +122,7 @@ void Risk::imprimirInformacion(Risk &juego){
 }
 string Risk::imprimirColores(Risk &juego){
     bool opcionCorrecta = false;
-    cout << "escoja el numero de color de su ejercito\n";
+    cout << "\n==== Escoja el numero de color de su ejercito ====\n";
     int num;
 
     for (int i = 0; i < juego.colores.size(); i++) {
@@ -135,7 +135,7 @@ string Risk::imprimirColores(Risk &juego){
         if (num >= 1 && num <= juego.colores.size()) {
             opcionCorrecta = true;
         } else {
-            cout << "opcion incorrecta\n";
+            cout << "---- Opcion incorrecta ----\n";
         }
     } while (!opcionCorrecta);
 
@@ -185,14 +185,14 @@ bool Risk::inicializar(Risk &juego){
 
     //ingreso de los participantes al juego
         for(int i=0; i<juego.cantidadJugadores;i++){
-            cout<<"Ingrese el nombre del participante: \n";
+            cout<<"\nIngrese el nombre del participante No. " << i+1 << ":\n";
             cout << "$ ";
             cin>>nombre;
             color=imprimirColores(juego);
             eliminarColor(juego,color);
-            cout<<"Lance el dado para ver el orden a la hora de escoger territorio\n ";
+            cout<<"==== Se lanzara el DADO para ver el ORDEN a la hora de escoger territorio ====\n";
             numeroDado= lanzamientoDado();
-            cout << "Saco un: " << numeroDado << endl;
+            cout << "- Saco un: " << numeroDado << endl;
             
             jugador.nombre=nombre;
             jugador.color=color;
@@ -210,7 +210,7 @@ bool Risk::inicializar(Risk &juego){
 
     for(int i=0;i<42;i++){
         Jugador& jugadorActual = juego.jugadores[contador];
-        cout << "Turno jugador: " << jugadorActual.nombre << endl;
+        cout << "\n==== TURNO DE " << jugadorActual.nombre << " ====\n";
         
         Pais paisEscogido = elegirPais(juego);
         paisEscogido.infanteria = 1;
@@ -229,7 +229,7 @@ bool Risk::inicializar(Risk &juego){
     int codigoAux, cantidadTropas;
     for(int i=0;i<juego.cantidadJugadores;i++){
         do{
-            cout << juego.jugadores[i].nombre << ": tienes " << juego.jugadores[i].infanteria << " tropas, donde las deseas repartir?\n";
+            cout <<"\n==== " << juego.jugadores[i].nombre << " tienes " << juego.jugadores[i].infanteria << " tropas, donde las deseas repartir? ====\n";
             juego.jugadores[i].imprimirTerritorios(juego.jugadores[i]);
             cout << "$ ";
             cin>> codigoAux;
@@ -253,8 +253,9 @@ bool Risk::inicializar(Risk &juego){
 }
 
 void Risk::imprimirJugadores(Risk &juego){
+    cout << "\n==== JUGADORES CREADOS ====\n";
     for(const Jugador &jugador : juego.jugadores){
-            cout <<"Jugador: " << jugador.nombre <<" Color: "<<jugador.color << "\n";
+            cout <<"Jugador: " << jugador.nombre <<"   -   Color: "<<jugador.color << "\n";
     }
 }
 
@@ -289,7 +290,7 @@ Pais Risk::elegirPais(Risk &juego){
                 return pais;
             }
         }
-        cout << "Opcion incorrecta. Por favor, elija un territorio valido.\n";
+        cout << "---- Opcion incorrecta. Por favor, elija un territorio valido. ----\n";
     } while (true);
 }
 
@@ -343,33 +344,33 @@ bool Risk::turno(Risk &juego, string id){
     if(jugadorExiste(juego,id)){
 
     Jugador& jugador = jugadorEnTurno(juego,id);
-        cout << "turno jugador: " << jugador.nombre << endl;
-        cout << "Obtener y ubicar nuevas unidades de ejercito.\n" ;
+        cout << "\n==== TURNO DE " << jugador.nombre << " ====\n";
+        cout << "1ra FASE : Obtener y ubicar nuevas unidades de ejercito.\n\n" ;
         
         //reclamar tropas obligatorias
         int refuerzo = reclamarTropasObligatorias(juego,jugador);
-        cout << "tropas asignadas: " << refuerzo << endl;
+        cout << "Tropas asignadas: " << refuerzo << endl;
         jugador.infanteria= jugador.infanteria + refuerzo;
 
         //asignar tropas de refuerzo
         do{
-            cout <<jugador.nombre << ": tienes " << jugador.infanteria << " tropas de refuerzo, donde las deseas repartir?\n";
+            cout <<"\n==== " << jugador.nombre << " tienes " << jugador.infanteria << " tropas de REFUERZO, donde las deseas repartir? ====\n";
             jugador.imprimirTerritorios(jugador);
             cout << "$ ";
             cin>> aux;
             if(jugador.codigoExiste(jugador, aux)){
-                cout << "cuantas deseas repatir?\n";
+                cout << "Cuantas deseas repatir?\n";
                 cout << "$ ";
                 cin>> cantidadTropas;
                 if(jugador.cantidadSolicitadaValida(jugador, cantidadTropas)){
                     jugador.aumentarInfanteria(jugador,aux,cantidadTropas);
                 }
                 else{
-                    cout << "cantidad erronea de tropas\n";
+                    cout << "---- Cantidad erronea de tropas ----\n";
                 }
             }
             else{
-                cout << "territorio no en su propiedad\n";
+                cout << "---- Territorio no en su propiedad ----\n";
             }    
         }while(jugador.infanteria!=0);
 
@@ -384,30 +385,31 @@ bool Risk::turno(Risk &juego, string id){
                     intercambiarCartasXRefuerzos(juego,jugador);
                 }
                 else{
-                    cout << "No tienes suficientes cartas para realizar el intercambio\n";
+                    cout << "---- No tienes suficientes cartas para realizar el intercambio ----\n";
                 }
                 
                 break;
             } else if (respuesta == 0) {
-                cout << "No se realizara el intercambio.\n";
+                cout << "---- No se realizara el intercambio ----\n";
                 break;
             } else {
-                cout << "Respuesta no valida. Por favor, ingrese 1 para 'si' o 0 para 'no'.\n" ;
+                cout << "---- Respuesta no valida. Por favor, ingrese 1 para 'si' o 0 para 'no' ----\n" ;
             }
         }
 
         //Menu de ataque
+        cout << "\n\n2da FASE: Ataque\n";
         do {
-            cout << "Menu de Ataque\n";
+            cout << "\n==== MENU DE ATAQUE ====\n";
             cout << "Que desea hacer?\n";
-            cout << "1: atacar un territorio\n";
-            cout << "0: dejar de atacar\n";
+            cout << "1: Atacar un territorio\n";
+            cout << "0: Dejar de atacar\n";
             cout << "$ ";
             
             cin >> respuesta;
         
             if (respuesta == 1) {
-                cout << "Elige un territorio propio el cual limite con el territorio que desees atacar.\n";
+                cout << "==== Elige un territorio propio el cual LIMITE con el territorio que desees ATACAR ====\n";
                 jugador.imprimirTerritorios(jugador);
                 cout << "$ ";
                 cin >> codigoAux;
@@ -419,7 +421,7 @@ bool Risk::turno(Risk &juego, string id){
                         Pais& paisDefensa = delvolverPaisAAtacar(juego,codigoPaisAtacar);
                         Jugador& jugadorDefensa = jugadorDefiende(juego,codigoPaisAtacar);
                         if(jugador.nombre.compare(jugadorDefensa.nombre)==0){
-                            cout << "Territorio perteneciente a usted, no puede atacarlo\n";
+                            cout << "---- Territorio perteneciente a usted, no puede atacarlo ----\n";
                         }
                         else{
                             bool conquisto = ataque(paisAtaque,paisDefensa,jugador,jugadorDefensa);
@@ -433,14 +435,14 @@ bool Risk::turno(Risk &juego, string id){
                                 transferirCartas(jugador,jugadorDefensa);
                                 eliminarJugador(juego,jugadorDefensa.nombre);
                                 if(jugador.territorios.size()==42){
-                                    cout << "termino la partida " << jugador.nombre << " es el ganador\n";
+                                    cout << "\n\n---- Termino la partida " << jugador.nombre << " es el ganador. Felicitaciones!\n";
                                     return true;
                                 }
                             }
                         }  
                     }
                     else{
-                        cout<<"no puedes atacar desde este territorio porque solo tienes una tropa en el\n";
+                        cout<<"---- No puedes atacar desde este territorio porque solo tienes una tropa en el\n";
                     }   
                 }
             }
@@ -451,7 +453,10 @@ bool Risk::turno(Risk &juego, string id){
                 cout << "Respuesta no válida.\n";
             }
         } while (menuAtaque);
+
+        cout << "\n\n3ra FASE : Redistribucion\n";
         do{
+            cout << "\n==== REDISTRIBUCION ====\n";
             cout << "Desea redistribuir sus tropas? (1:SI, 0:NO)\n";
             cout << "$ ";
             cin >> respuesta;
@@ -461,7 +466,7 @@ bool Risk::turno(Risk &juego, string id){
         }while(respuesta != 0);
     }
     else{
-        cout << "jugador no existe\n";
+        cout << "---- Jugador no existe ----\n";
     }
     return false;
 }
@@ -493,7 +498,7 @@ void Risk::redistribuirTropas(Risk& juego, Jugador& jugador){
                         }
                     }else{
                         cout << "---- Los territorios no se relacionan ----\n";
-                        cout << "Desea salir? (1:SI, 0:NO)\n";
+                        cout << "Desea terminar REDISTRIBUCION? (1:SI, 0:NO)\n";
                         cout << "$ ";
                         cin >> redistribucionExitosa;
                     }
@@ -585,24 +590,24 @@ int Risk::escogerPaisAAtacar(Risk &juego,Jugador &jugador,Pais &pais){
             posiblesAtaques.push_back(codigo);
         }
     }
-    cout << pais.nombre <<":\n";
-    cout << "tropas en el pais:" << pais.infanteria << endl;
+    cout << "\n==== El pais desde donde vas a ATACAR es " << pais.nombre <<" ====\n";
+    cout << "Tropas en el pais:" << pais.infanteria << endl;
     cout << "Paises que te pertenecen relacionados:\n";
-    cout <<"-";
+    cout <<"- ";
     for (int codigo : enAmbos) {
-        cout << codigo << "-";
+        cout << codigo << ", ";
     }
-    cout << "\n";
+    cout << endl;
                 
-    cout << "Paises que se pueden atacar: \n";
-    cout <<"-";
+    cout << "Paises que se pueden atacar:\n";
+    cout <<"- ";
     for (int codigo : posiblesAtaques) {
-        cout << codigo << "-";
+        cout << codigo << ", ";
     }
     cout << endl;
     do{
-        cout<<"ingrese el pais a atacar: \n";
-        cout<<"$";
+        cout<<"\nIngrese el pais a atacar: \n";
+        cout<<"$ ";
         cin>>codigoAtaque;
         return codigoAtaque;
     }while(!paisPosibleAAtacar(posiblesAtaques,codigoAtaque));
@@ -628,9 +633,9 @@ Pais& Risk::delvolverPaisAAtacar(Risk &juego, int codigo){
 }
 bool Risk::ataque(Pais & ataca, Pais & defiende, Jugador& atacante, Jugador& defensor){
     bool conquisto = false;
-    cout << "con cuantas tropas deseas atacar "<< atacante.nombre<<" ?\n";
+    cout << "Con cuantas tropas deseas ATACAR "<< atacante.nombre<<" ?\n";
     int tropasAtacantes = cantidadTropasAtacantes(ataca);
-    cout << "con cuantas tropas deseas defender "<< defensor.nombre<<" ?\n";
+    cout << "Con cuantas tropas deseas DEFENDER "<< defensor.nombre<<" ?\n";
     int tropasDefensa = cantidadTropasDefensoras(defiende);
 
     ataca.infanteria-=tropasAtacantes;
@@ -654,9 +659,9 @@ bool Risk::ataque(Pais & ataca, Pais & defiende, Jugador& atacante, Jugador& def
         }
     }
 
-    cout << "Resultado de la batalla:\n";
-    cout << "Victorias del atacante: " << victoriasAtacante << "\n";
-    cout << "Victorias del defensor: " << victoriasDefensor << "\n";
+    cout << "\n==== RESULTADO DE LA BATALLA ====\n";
+    cout << "Victorias del ATACANTE: " << victoriasAtacante << "\n";
+    cout << "Victorias del DEFENSOR: " << victoriasDefensor << "\n";
 
     defiende.infanteria += tropasDefensa - victoriasAtacante;
 
@@ -711,6 +716,7 @@ int Risk::cantidadTropasAtacantes(Pais &atacante){
             cout<<"2 tropas" << endl;
             cout<<"3 tropas"<< endl;
         }
+        cout << "$ ";
         cin >> cantidad;
         if(atacante.infanteria == 2 ){
             if(cantidad == 1){
@@ -751,6 +757,7 @@ int Risk::cantidadTropasDefensoras(Pais &defensor){
             cout<< "1 tropa" << endl;
             cout<<"2 tropas" << endl; 
         }
+        cout << "$ "; 
         cin >> cantidad;
         if(defensor.infanteria == 1){
             if(cantidad == 1){
@@ -797,7 +804,7 @@ void Risk::intercambiarCartasXRefuerzos(Risk& juego, Jugador& jugador){
     Carta carta1, carta2, carta3;
     int codigoCarta1, codigoCarta2, codigoCarta3;
     jugador.imprimirCartas(jugador);
-    cout<< "seleccione 1 por 1 el codigo de las tres cartas que desea intercambiar\n";
+    cout<< "Seleccione uno por uno el codigo de las tres cartas que desea intercambiar\n";
     cin>>codigoCarta1;
     cin>>codigoCarta2;
     cin>>codigoCarta3;
@@ -812,14 +819,14 @@ void Risk::intercambiarCartasXRefuerzos(Risk& juego, Jugador& jugador){
         anadirInfanteriaSiCoincideConcarta(jugador,codigoCarta1);
         anadirInfanteriaSiCoincideConcarta(jugador,codigoCarta2);
         anadirInfanteriaSiCoincideConcarta(jugador,codigoCarta3);
-        cout<<"se añadieron " << juego.caballoDorado << " tropas a su infanteria\n";
+        cout<<"Se anadieron " << juego.caballoDorado << " tropas a su infanteria\n";
         actualizarCaballoDorado(juego);
         jugador.eliminarCartaPorCodigo(carta1.codigoPais);
         jugador.eliminarCartaPorCodigo(carta2.codigoPais);
         jugador.eliminarCartaPorCodigo(carta3.codigoPais);
     }
     else{
-        cout << "cartas no cumplen ningun requisito para ser intercambiadas\n";
+        cout << "---- Cartas no cumplen ningun requisito para ser intercambiadas ----\n";
     }
 }
 
@@ -857,7 +864,7 @@ void Risk::anadirInfanteriaSiCoincideConcarta(Jugador &jugador, int codigo){
         for(int j=0; j < jugador.territorios.size();j++){
             if(jugador.territorios[j].codigo == codigo){
                 jugador.territorios[j].infanteria+=2;
-                cout << "se insertaron 2 tropas al territorio: " << jugador.territorios[j].nombre << endl;
+                cout << "Se insertaron 2 tropas al territorio: " << jugador.territorios[j].nombre << endl;
             }
         }
 }
