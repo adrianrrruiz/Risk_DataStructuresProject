@@ -22,8 +22,9 @@ int main(int argc, char* argv[]) {
     vector<int> idJugadores;
     vector<int>::iterator itIdJugadores;
     Risk juego;
-
-    cout << "\nBienvenido a Risk! Desarrollado por: Adrian, Juliana y Daniel\n";
+    system("cls");
+    cout << "\n---- BIENVENIDO A RISK ----\n"; 
+    cout << "Desarrollado por: Adrian, Juliana y Daniel\n";
     do {
         cout << "$ ";
         getline(cin, linea);
@@ -38,6 +39,7 @@ int main(int argc, char* argv[]) {
                 cout << "inicializar <nombre_archivo> -> Inicializa el juego con los datos contenidos en el archivo identificado por <nombre_archivo>\n\n";
             }else{
                 if (!inicializado){
+                    system("cls");
                     bool finalizarInicializacion=juego.inicializar(juego);
                     if(finalizarInicializacion){
                         cout << "\nEl juego se ha inicializado correctamente!\n\n";
