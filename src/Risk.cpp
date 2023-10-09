@@ -868,3 +868,41 @@ void Risk::anadirInfanteriaSiCoincideConcarta(Jugador &jugador, int codigo){
             }
         }
 }
+
+void Risk::guardarPartida(Risk& juego, string nombreArchivo){
+
+    nombreArchivo = "files/games/" + nombreArchivo + ".txt";
+    ofstream archivo(nombreArchivo);
+
+    // Verifica si el archivo se abrió correctamente
+    if (archivo) {
+        archivo << juego.cantidadJugadores << endl; 
+        for(Jugador jugador : juego.jugadores){
+            archivo << "*" << endl;
+            archivo << jugador.nombre << "," << jugador.color << endl; 
+            archivo  << jugador.territorios.size() << endl;
+            for(Pais pais : jugador.territorios){
+                archivo << pais.codigoContinente << "," << pais.codigo << "," << pais.nombre << "," << pais.infanteria << "," << "[";
+                for(int i =0; i< pais.relaciones.size(); i++){
+                    if(i == 0){
+                        archivo << pais.relaciones[i];
+                    }
+                    else{
+                        archivo << "," << pais.relaciones[i];
+                    }
+                }
+                archivo << "]" << endl;
+            }
+            archivo<< jugador.cartas.size() <<endl;
+            for(Carta carta : jugador.cartas){
+                archivo << carta.codigoPais << "," << carta.figura << endl;
+            }
+        }
+        // Cierra el archivo
+        archivo.close();
+
+        cout << "Se ha escrito en el archivo exitosamente." << endl;
+    } else {
+        cout << "No se pudo guardar." << endl;
+    }
+}
