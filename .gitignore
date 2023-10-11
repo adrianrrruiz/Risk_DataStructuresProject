@@ -38,3 +38,6 @@
 *.cbp
 *.depend
 *.layout
+
+# saved games
+files/games/*

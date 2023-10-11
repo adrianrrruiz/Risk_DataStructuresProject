@@ -1,3 +1,13 @@
+# Compilación y ejecución
+Para compilarlo
+```
+g++ -std=c++11 -o proyecto .\main.cpp .\src\*.cpp
+```
+Para ejecutarlo
+```
+.\proyecto.exe 
+```
+
 # Juego Risk
 
 Este proyecto implementa una versión del juego de mesa Risk en C++. El juego incluye la lectura de archivos de configuración para cargar continentes, países y relaciones, además de una funcionalidad básica para el desarrollo del juego.
@@ -11,7 +21,6 @@ Este proyecto implementa una versión del juego de mesa Risk en C++. El juego in
 - [Contribución](#contribución)
 - [Licencia](#licencia)
 - [Autores](#autores)
-- [Referencia de la API](#referencia-de-la-api)
 
 ## Archivos de Configuración
 

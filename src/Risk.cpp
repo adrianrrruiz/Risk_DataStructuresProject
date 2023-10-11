@@ -185,15 +185,17 @@ bool Risk::inicializar(Risk &juego){
 
     //ingreso de los participantes al juego
         for(int i=0; i<juego.cantidadJugadores;i++){
-            cout<<"\nIngrese el nombre del participante No. " << i+1 << ":\n";
+            system("cls");
+            cout<<"Ingrese el nombre del participante No. " << i+1 << ":\n";
             cout << "$ ";
             cin>>nombre;
             color=imprimirColores(juego);
             eliminarColor(juego,color);
             cout<<"==== Se lanzara el DADO para ver el ORDEN a la hora de escoger territorio ====\n";
+            system("pause");
             numeroDado= lanzamientoDado();
             cout << "- Saco un: " << numeroDado << endl;
-            
+            system("pause");
             jugador.nombre=nombre;
             jugador.color=color;
             jugador.infanteria=infanteriaXJugador;
@@ -209,8 +211,9 @@ bool Risk::inicializar(Risk &juego){
     Pais paisEscogido;
 
     for(int i=0;i<42;i++){
+        system("cls");
         Jugador& jugadorActual = juego.jugadores[contador];
-        cout << "\n==== TURNO DE " << jugadorActual.nombre << " ====\n";
+        cout << "==== TURNO DE " << jugadorActual.nombre << " ====\n";
         
         Pais paisEscogido = elegirPais(juego);
         paisEscogido.infanteria = 1;
@@ -253,10 +256,12 @@ bool Risk::inicializar(Risk &juego){
 }
 
 void Risk::imprimirJugadores(Risk &juego){
+    system("cls");
     cout << "\n==== JUGADORES CREADOS ====\n";
     for(const Jugador &jugador : juego.jugadores){
             cout <<"Jugador: " << jugador.nombre <<"   -   Color: "<<jugador.color << "\n";
     }
+    system("pause");
 }
 
 int Risk::evaluarInfanteria(Risk &juego){
@@ -343,8 +348,9 @@ bool Risk::turno(Risk &juego, string id){
 
     if(jugadorExiste(juego,id)){
 
-    Jugador& jugador = jugadorEnTurno(juego,id);
-        cout << "\n==== TURNO DE " << jugador.nombre << " ====\n";
+        Jugador& jugador = jugadorEnTurno(juego,id);
+        system("cls");
+        cout << "==== TURNO DE " << jugador.nombre << " ====\n";
         cout << "1ra FASE : Obtener y ubicar nuevas unidades de ejercito.\n\n" ;
         
         //reclamar tropas obligatorias
@@ -398,6 +404,7 @@ bool Risk::turno(Risk &juego, string id){
         }
 
         //Menu de ataque
+        system("cls");
         cout << "\n\n2da FASE: Ataque\n";
         do {
             cout << "\n==== MENU DE ATAQUE ====\n";
@@ -867,4 +874,42 @@ void Risk::anadirInfanteriaSiCoincideConcarta(Jugador &jugador, int codigo){
                 cout << "Se insertaron 2 tropas al territorio: " << jugador.territorios[j].nombre << endl;
             }
         }
+}
+
+void Risk::guardarPartida(Risk& juego, string nombreArchivo){
+
+    nombreArchivo = "files/games/" + nombreArchivo + ".txt";
+    ofstream archivo(nombreArchivo);
+
+    // Verifica si el archivo se abrió correctamente
+    if (archivo) {
+        archivo << juego.cantidadJugadores << endl; 
+        for(Jugador jugador : juego.jugadores){
+            archivo << "*" << endl;
+            archivo << jugador.nombre << "," << jugador.color << endl; 
+            archivo  << jugador.territorios.size() << endl;
+            for(Pais pais : jugador.territorios){
+                archivo << pais.codigoContinente << "," << pais.codigo << "," << pais.nombre << "," << pais.infanteria << "," << "[";
+                for(int i =0; i< pais.relaciones.size(); i++){
+                    if(i == 0){
+                        archivo << pais.relaciones[i];
+                    }
+                    else{
+                        archivo << "," << pais.relaciones[i];
+                    }
+                }
+                archivo << "]" << endl;
+            }
+            archivo<< jugador.cartas.size() <<endl;
+            for(Carta carta : jugador.cartas){
+                archivo << carta.codigoPais << "," << carta.figura << endl;
+            }
+        }
+        // Cierra el archivo
+        archivo.close();
+
+        cout << "Se ha escrito en el archivo exitosamente." << endl;
+    } else {
+        cout << "No se pudo guardar." << endl;
+    }
 }
