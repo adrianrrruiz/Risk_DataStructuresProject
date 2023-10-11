@@ -21,7 +21,6 @@ Este proyecto implementa una versión del juego de mesa Risk en C++. El juego in
 - [Contribución](#contribución)
 - [Licencia](#licencia)
 - [Autores](#autores)
-- [Referencia de la API](#referencia-de-la-api)
 
 ## Archivos de Configuración
 
