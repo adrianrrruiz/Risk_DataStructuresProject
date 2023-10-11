@@ -54,12 +54,17 @@ public:
     void anadirInfanteriaSiCoincideConcarta(Jugador &jugador, int codigo);
     void transferirCartas(Jugador& ganador, Jugador& perdedor);
     void eliminarJugador(Risk& juego,const string& nombre);
+    
+    //segundo avance
+
+    void guardarPartida(Risk& juego, string nombreArchivo);
+
     vector<int> dados(int cantidad);
     vector<Continente> continentes;
     vector<Pais> paisesDisponibles;
     vector<Jugador> jugadores;
     vector <Carta> cartas;
-    vector <string> colores = {"verde", "azul", "rojo", "amarillo", "negro", "gris"};
+    vector <string> colores = {"Verde", "Azul", "Rojo", "Amarillo", "Negro", "Gris"};
     int cantidadJugadores;
     int caballoDorado;
 };
