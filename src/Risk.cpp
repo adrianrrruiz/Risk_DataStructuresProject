@@ -226,12 +226,14 @@ bool Risk::inicializar(Risk &juego){
             contador = 0;
         }
     }
+    
 
     //rellenar los territorios con las tropas faltantes
 
     int codigoAux, cantidadTropas;
     for(int i=0;i<juego.cantidadJugadores;i++){
         do{
+            system("cls");
             cout <<"\n==== " << juego.jugadores[i].nombre << " tienes " << juego.jugadores[i].infanteria << " tropas, donde las deseas repartir? ====\n";
             juego.jugadores[i].imprimirTerritorios(juego.jugadores[i]);
             cout << "$ ";
@@ -638,6 +640,7 @@ Pais& Risk::delvolverPaisAAtacar(Risk &juego, int codigo){
         }
     }
 }
+
 bool Risk::ataque(Pais & ataca, Pais & defiende, Jugador& atacante, Jugador& defensor){
     bool conquisto = false;
     cout << "Con cuantas tropas deseas ATACAR "<< atacante.nombre<<" ?\n";
@@ -911,5 +914,94 @@ void Risk::guardarPartida(Risk& juego, string nombreArchivo){
         cout << "Se ha escrito en el archivo exitosamente." << endl;
     } else {
         cout << "No se pudo guardar." << endl;
+    }
+}
+
+bool Risk::cargarPartida(Risk& juego, string nombreArchivo){
+    leerContinentes(juego);
+    leerPaises(juego);
+    leerRelaciones(juego);
+    leerDistribucionCartas(juego);
+    juego.caballoDorado = 4;
+    nombreArchivo = "files/games/" + nombreArchivo + ".txt";
+    ifstream archivo(nombreArchivo);
+    if (archivo.is_open()) {
+        int aux;
+        archivo >> juego.cantidadJugadores;
+        archivo.ignore();
+        cout << "cantidad de jugadores:"<< juego.cantidadJugadores << endl;
+        for(int i =0; i < juego.cantidadJugadores; i++){
+            Jugador jugador;
+            string line;
+            getline(archivo, line);
+            cout<<"asterisco:" << line << endl;
+            getline(archivo,line);
+            istringstream jugadorInfo(line);
+            getline(jugadorInfo, jugador.nombre, ',');
+            cout<< "nombre:"<< jugador.nombre << endl;
+            getline(jugadorInfo, jugador.color, ',');
+            cout<< "color:"<< jugador.color << endl;
+            getline(archivo,line);
+            int cantidadPaises;
+            cantidadPaises = stoi(line);
+            cout<< "Cantidad Paises: "<< cantidadPaises << endl;
+            for(int i =0; i < cantidadPaises; i++){
+                Pais paisAux;
+                string contCode, otherCode, troops, relations,aux;
+                getline(archivo,line);
+                cout << "info Pais: " << line << endl;
+                istringstream infoPais(line);
+                getline(infoPais,contCode, ',');
+                paisAux.codigoContinente = stoi(contCode);
+                cout << "codigo Continente: " << paisAux.codigoContinente << endl;
+                getline(infoPais,otherCode,',');
+                paisAux.codigo = stoi(otherCode);
+                cout << "codigo: " << paisAux.codigo << endl;
+                getline(infoPais,paisAux.nombre,',');
+                cout << "nombre: " << paisAux.nombre << endl;
+                getline(infoPais,troops,',');
+                paisAux.infanteria = stoi(troops);
+                cout <<"infanteria: " << paisAux.infanteria << endl;
+                getline(infoPais, relations, '[');
+                getline(infoPais, relations, ']');
+                cout << "relaciones: " << relations << endl;
+                istringstream relacionesStream(relations);
+                string relacion;
+                while (getline(relacionesStream, relacion, ',')) {
+                    cout << relacion << ",";
+                    paisAux.relaciones.push_back(std::stoi(relacion));
+                }
+                jugador.territorios.push_back(paisAux);
+            }
+            getline(archivo,line);
+            aux = stoi(line);
+            cout << "cantidad Cartas: " << aux << endl;
+            for(int i= 0; i < aux; i++){
+                string auxInt;
+                Carta aux;
+                getline(archivo,line);
+                istringstream carta(line);
+                getline(carta,auxInt,',');
+                aux.codigoPais = stoi(auxInt);
+                getline(carta,aux.figura,',');
+                jugador.cartas.push_back(aux);
+            }  
+            juego.jugadores.push_back(jugador); 
+        }
+        archivo.close();
+        corregirCartas(juego);
+        cout << "Se ha leido el archivo exitosamente." << endl;
+        return true;
+    } else {
+        cout << "No se pudo abrir el archivo." << endl;
+        return false;
+    }
+}
+
+void Risk::corregirCartas(Risk& juego){
+    for(int i = 0; i < juego.cantidadJugadores; i++){
+        for(int j=0; j < juego.jugadores[i].cartas.size();j++){
+            borrarCarta(juego,juego.jugadores[i].cartas[j]);
+        }
     }
 }
