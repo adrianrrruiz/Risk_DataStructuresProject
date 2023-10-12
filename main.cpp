@@ -56,9 +56,13 @@ int main(int argc, char* argv[]) {
             if(param2 == "--help" || param2 == "--ayuda" ){
                 cout << "\ninicializar -> Inicializa el juego con los datos contenidos en el archivo identificado por <nombre_archivo>\n\n";
             }else{
-                if (inicializado){
-                    cout << "\nEl juego ya ha sido inicializado.\n\n";
-                    inicializado = true;
+                if (!inicializado){
+                    bool finalizarInicializacion= juego.cargarPartida(juego,param1);
+                    if(finalizarInicializacion){
+                        cout << "\nEl juego se ha inicializado correctamente!\n\n";
+                        inicializado = true;
+                        jugando = true;
+                    }
                 }else {
                     cout << "\n" << param1 <<" no contiene informacion valida para inicializar el juego.\n\n";
                 }

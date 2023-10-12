@@ -58,6 +58,8 @@ public:
     //segundo avance
 
     void guardarPartida(Risk& juego, string nombreArchivo);
+    bool cargarPartida(Risk& juego, string nombreArchivo);
+    void corregirCartas(Risk& juego);
 
     vector<int> dados(int cantidad);
     vector<Continente> continentes;
