@@ -1,0 +1,6 @@
+1,America del norte,9
+2,America del sur,4
+3,Europa,7
+4,Africa,6
+5,Asia,12
+6,Ocenia,4
