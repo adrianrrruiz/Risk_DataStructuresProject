@@ -6,13 +6,32 @@
 #include "Continente.h"
 #include "Carta.h"
 #include "Jugador.h"
+#include "Nodo.h"
 #include <fstream>
 #include <sstream>
 #include <algorithm>
 #include <string>
 #include <set>
+#include <unordered_map>
+#include <queue>
+#include <bitset>
 
 using namespace std;
+
+struct PartidaComprimida{
+    short cantCaracteresDiferentes;
+    unordered_map<char, long> tablaFrecuencia;
+    long cantCaracteres;
+    vector<bitset<8>> cadenaComprimida; 
+    short cerosAdicionales;
+};
+
+struct comp{
+    bool operator()(Nodo *i, Nodo *d)
+    {
+        return i->frecuencia > d->frecuencia;
+    }
+};
 
 class Risk {
 public:
@@ -60,6 +79,16 @@ public:
     void guardarPartida(Risk& juego, string nombreArchivo);
     bool cargarPartida(Risk& juego, string nombreArchivo);
     void corregirCartas(Risk& juego);
+    void codificar(Nodo *raiz, string str, unordered_map<char, string> &CodigoHuffman);
+    void decodificar(Nodo *raiz, int &indice, string str);
+    void crearArbol(unordered_map<char, long> &tablaFrecuencia, unordered_map<char, string> &diccionarioHuffman);
+    void crearTablaFrecuencia(unordered_map<char, long> &tablaFrecuencia, string texto);
+    string generarCodigoCodificado(string texto, unordered_map<char, string> diccionarioHuffman);
+    string crearCadenaDelArchivoTxt(string nombreArchivo);
+    void guardarComprimido(string nombreArchivo);
+    int modificarCadena(string &cadenaCodificada);
+    void pasarDeStringABytes(string cadenaCodificada, vector<bitset<8>> &cadenaComprimida);
+    Nodo *getNode(char simbolo, int frecuencia, Nodo *izq, Nodo *der);
 
     vector<int> dados(int cantidad);
     vector<Continente> continentes;

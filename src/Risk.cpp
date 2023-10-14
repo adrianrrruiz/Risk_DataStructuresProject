@@ -1005,3 +1005,190 @@ void Risk::corregirCartas(Risk& juego){
         }
     }
 }
+
+//Codificar caracteres
+void Risk::codificar(Nodo *raiz, string str, unordered_map<char, string> &diccionarioHuffman){
+    if(raiz == nullptr){
+        return;
+    }
+    if(raiz->izq == nullptr && raiz->der == nullptr){
+        diccionarioHuffman[raiz->simbolo] = str;
+    }
+    codificar(raiz->izq, str + "0", diccionarioHuffman);
+    codificar(raiz->der, str + "1", diccionarioHuffman); 
+}
+
+//Pasar de codificación a caracteres
+void Risk::decodificar(Nodo *raiz, int &indice, string str)
+{
+    if(raiz == nullptr){
+        return;
+    }
+    if(raiz->izq == nullptr && raiz->der == nullptr){
+        cout << raiz->simbolo;
+        return;
+    }
+    indice++;
+    if(str[indice] == '0'){
+        decodificar(raiz->izq, indice, str);
+    }else{
+        decodificar(raiz->der, indice, str);
+    }
+}
+
+void Risk::crearArbol(unordered_map<char, long> &tablaFrecuencia, unordered_map<char, string> &diccionarioHuffman)
+{
+    priority_queue<Nodo*, vector<Nodo*>, comp> colaPrioridad;
+    //Llenar cola de prioridad
+    for(auto pair: tablaFrecuencia){
+        //Inserta los nodos a la cola de prioridad con sus hijos der e izq en nullptr
+        //pair.first = simbolo
+        //pair.second = frecuencia
+        colaPrioridad.push(getNode(pair.first, pair.second, nullptr, nullptr));
+    }
+
+    priority_queue<Nodo*, vector<Nodo*>, comp> copiaPrioridad = colaPrioridad;
+    cout << "Recorriendo cola de prioridad \n";
+    while (!copiaPrioridad.empty()) {
+        Nodo* elemento = copiaPrioridad.top();
+        cout << "simbolo " << elemento->simbolo << "- frecuencia " << elemento->frecuencia<< endl;
+        copiaPrioridad.pop();
+    }
+    
+    //Con los dos primeros elementos de la cola, crea un nuevo nodo y su raiz es la suma de sus frecuencias
+    while(colaPrioridad.size() != 1){
+        Nodo *izq = colaPrioridad.top();
+        colaPrioridad.pop();
+        Nodo *der = colaPrioridad.top();
+        colaPrioridad.pop();
+        
+        int sum = izq->frecuencia + der->frecuencia;
+        //El valor del simbolo es '\0' para todos los nodos intermedios o raiz
+        colaPrioridad.push(getNode('\0', sum, izq, der));
+    }
+    cout << "desocupo cola de prioridad \n";
+
+    Nodo* raiz = colaPrioridad.top();
+
+    cout << "Antes de codificar\n";
+    
+    codificar(raiz, "", diccionarioHuffman);
+
+    cout << "Despues de codificar\n";
+    
+    cout << "\nLos codigos de Huffman son:\n\n";
+    for(auto pair : diccionarioHuffman){
+        cout << " " << pair.first << " - " << pair.second <<endl;
+    }
+}
+
+void Risk::crearTablaFrecuencia(unordered_map<char, long> &tablaFrecuencia, string texto){
+    for(char simbolo: texto){
+        tablaFrecuencia[simbolo]++;
+    }
+}
+
+string Risk::generarCodigoCodificado(string texto, unordered_map<char, string> diccionarioHuffman){
+    string str = "";
+    for(char simbolo: texto){
+        str += diccionarioHuffman[simbolo];
+    }
+    return str;
+}
+
+string Risk::crearCadenaDelArchivoTxt(string nombreArchivo){
+    nombreArchivo = "files/games/" + nombreArchivo + ".txt";
+    ifstream archivo(nombreArchivo);
+    string cadenaCompleta = "";
+    // Verifica si el archivo se abrió correctamente
+    if (archivo) {
+        string linea;
+        while (getline(archivo, linea)) {
+            cadenaCompleta += linea + "\n";
+        }
+        // Cierra el archivo
+        archivo.close();
+    } else {
+        cout << "No se pudo leer el archivo" << endl;
+    }
+    return cadenaCompleta;
+}
+
+void Risk::guardarComprimido(string nombreArchivo){
+    string todoElArchivoEnUnaCadena = crearCadenaDelArchivoTxt(nombreArchivo);
+    // cout << "Creo cadena con archivo txt\n";
+    // cout << todoElArchivoEnUnaCadena << endl;
+    unordered_map<char, long> tablaFrecuencia;
+    unordered_map<char, string> diccionarioHuffman;
+    crearTablaFrecuencia(tablaFrecuencia, todoElArchivoEnUnaCadena);
+    // cout << "Creo tabla frecuencia\n";
+    // for (auto pair : tablaFrecuencia){
+    //     cout << pair.first << " - " << pair.second << endl;
+    // }
+    crearArbol(tablaFrecuencia, diccionarioHuffman);
+
+    //Obtener cantidad de caracteres diferentes
+    short cantCaracteresDiferentes = tablaFrecuencia.size();
+     //Obtener cantidad de caracteres de todo el archivo original
+    long cantCaracteres = todoElArchivoEnUnaCadena.size();
+     //Obtener codigo completo codificado
+    string cadenaCodificada = generarCodigoCodificado(todoElArchivoEnUnaCadena,diccionarioHuffman);
+    int cerosAdicionales = modificarCadena(cadenaCodificada);
+    vector<bitset<8>> cadenaComprimida;
+    //Se crean los bytes y se llena el vector "cadenaComprimida"
+    pasarDeStringABytes(cadenaCodificada, cadenaComprimida);
+    
+    PartidaComprimida p;
+    p.cantCaracteresDiferentes = cantCaracteresDiferentes;
+    p.tablaFrecuencia = tablaFrecuencia;
+    p.cantCaracteres = cantCaracteres;
+    p.cerosAdicionales = cerosAdicionales;
+    cout << "Ceros adicionales: " << cerosAdicionales << endl;
+    p.cadenaComprimida = cadenaComprimida;
+    
+    nombreArchivo = "files/games/" + nombreArchivo + ".dat";
+    ofstream archivoBin(nombreArchivo, ios::binary|ios::app);
+
+    if(archivoBin){
+        archivoBin.write((char *)& p, sizeof(p));
+        archivoBin.close();
+    }else{
+        cout << "No se pudo abrir el archivo!" << endl;
+    }
+}
+
+//Añadir 0s adicionales para que sea multiplo de 8
+int Risk::modificarCadena(string &cadenaCodificada){
+    if(cadenaCodificada.size() % 8 != 0){
+        //Toca agregar 0s
+        int faltantes =  8 - (cadenaCodificada.size()%8);
+        for(short i=0 ;i <faltantes ;i++){
+            cadenaCodificada+="0";
+        }
+        return faltantes;
+    }
+    return 0;
+}
+
+void Risk::pasarDeStringABytes(string cadenaCodificada, vector<bitset<8>> &cadenaComprimida){
+    int cantBytes = cadenaCodificada.size() / 8;
+    cout << "Cantidad de bytes: " << cantBytes << endl;
+    for(int i = 0; i < cadenaCodificada.length(); i += 8){
+        string byte = cadenaCodificada.substr(i,8);
+        bitset<8> byteReal(byte);
+        cadenaComprimida.push_back(byteReal);
+    }
+}
+
+//Asignar los nuevos nodos en el árbol de Huffman
+Nodo *Risk::getNode(char simbolo, int frecuencia, Nodo *izq, Nodo *der)
+{
+    Nodo* nodo = new Nodo();
+    
+    nodo->simbolo = simbolo;
+    nodo->frecuencia = frecuencia;
+    nodo->izq = izq;
+    nodo->der = der;
+
+    return nodo;
+}
