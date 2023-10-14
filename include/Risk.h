@@ -54,6 +54,13 @@ public:
     void anadirInfanteriaSiCoincideConcarta(Jugador &jugador, int codigo);
     void transferirCartas(Jugador& ganador, Jugador& perdedor);
     void eliminarJugador(Risk& juego,const string& nombre);
+    
+    //segundo avance
+
+    void guardarPartida(Risk& juego, string nombreArchivo);
+    bool cargarPartida(Risk& juego, string nombreArchivo);
+    void corregirCartas(Risk& juego);
+
     vector<int> dados(int cantidad);
     vector<Continente> continentes;
     vector<Pais> paisesDisponibles;
