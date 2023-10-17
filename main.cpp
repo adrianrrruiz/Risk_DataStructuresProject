@@ -119,6 +119,7 @@ int main(int argc, char* argv[]) {
                 }
                 else if(inicializado){
                     juego.guardarComprimido(param1);
+
                     cout << "\nLa partida ha sido guardada correctamente!\n\n";
                     cout << "$ ";
                     cin.ignore();
