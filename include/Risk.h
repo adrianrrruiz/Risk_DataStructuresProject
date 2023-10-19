@@ -13,18 +13,12 @@
 #include <string>
 #include <set>
 #include <unordered_map>
+#include <map>
 #include <queue>
 #include <bitset>
 
 using namespace std;
 
-struct PartidaComprimida{
-    short cantCaracteresDiferentes;
-    string tablaFrecuencia;
-    long cantCaracteres;
-    string cadenaComprimida; 
-    short cerosAdicionales;
-};
 
 struct comp{
     bool operator()(Nodo *i, Nodo *d)
@@ -81,8 +75,8 @@ public:
     void corregirCartas(Risk& juego);
     void codificar(Nodo *raiz, string str, unordered_map<char, string> &CodigoHuffman);
     void decodificar(Nodo *raiz, int &indice, string str, string &textoNormal);
-    void crearArbol(unordered_map<char, long> &tablaFrecuencia, Nodo *&raiz);
-    void crearTablaFrecuencia(unordered_map<char, long> &tablaFrecuencia, string texto);
+    void crearArbol(map<char, long> &tablaFrecuencia, Nodo *&raiz);
+    void crearTablaFrecuencia(map<char, long> &tablaFrecuencia, string texto);
     string generarCodigoCodificado(string texto, unordered_map<char, string> diccionarioHuffman);
     string crearCadenaDelArchivoTxt(string nombreArchivo);
     void guardarComprimido(string nombreArchivo);
@@ -92,10 +86,6 @@ public:
     void cargarComprimido(string nombreArchivo);
     void escribirEnArchivoDescompresion(string nombreArchivo, string textoNormal);
     string pasarDeCodificadaANormal(string cadenaCodificada, Nodo *raiz);
-    string serializarMap(const unordered_map<char, long> &mapa);
-    unordered_map<char, long> deserializarMap(const string &str);
-    string serializarVector(const vector<bitset<8>> &vector);
-    vector<bitset<8>> deserializarVector(const string &str);
 
     vector<int> dados(int cantidad);
     vector<Continente> continentes;
