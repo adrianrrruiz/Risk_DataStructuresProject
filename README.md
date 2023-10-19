@@ -3,6 +3,10 @@ Para compilarlo
 ```
 g++ -std=c++11 -o proyecto .\main.cpp .\src\*.cpp
 ```
+Para compilar prueba unitaria guardarPartida
+```
+g++ -std=c++11 -o proyecto .\src\*.cpp .\test\guardarPartidaTest.cpp
+```
 Para ejecutarlo
 ```
 .\proyecto.exe 
