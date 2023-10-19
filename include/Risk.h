@@ -19,6 +19,7 @@
 
 using namespace std;
 
+
 struct comp{
     bool operator()(Nodo *i, Nodo *d)
     {
