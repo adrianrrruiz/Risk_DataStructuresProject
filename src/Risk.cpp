@@ -1036,7 +1036,7 @@ void Risk::decodificar(Nodo *raiz, int &indice, string str, string &textoNormal)
     }
 }
 
-void Risk::crearArbol(unordered_map<char, long> &tablaFrecuencia, Nodo*&raiz)
+void Risk::crearArbol(map<char, long> &tablaFrecuencia, Nodo*&raiz)
 {
     priority_queue<Nodo*, vector<Nodo*>, comp> colaPrioridad;
     //Llenar cola de prioridad
@@ -1049,12 +1049,13 @@ void Risk::crearArbol(unordered_map<char, long> &tablaFrecuencia, Nodo*&raiz)
 
     priority_queue<Nodo*, vector<Nodo*>, comp> copiaPrioridad = colaPrioridad;
     cout << "Recorriendo cola de prioridad \n";
+    system("pause");
     while (!copiaPrioridad.empty()) {
         Nodo* elemento = copiaPrioridad.top();
         cout << "simbolo " << elemento->simbolo << "- frecuencia " << elemento->frecuencia<< endl;
         copiaPrioridad.pop();
     }
-    
+    system("pause");
     //Con los dos primeros elementos de la cola, crea un nuevo nodo y su raiz es la suma de sus frecuencias
     while(colaPrioridad.size() != 1){
         Nodo *izq = colaPrioridad.top();
@@ -1070,7 +1071,7 @@ void Risk::crearArbol(unordered_map<char, long> &tablaFrecuencia, Nodo*&raiz)
     raiz = colaPrioridad.top();
 }
 
-void Risk::crearTablaFrecuencia(unordered_map<char, long> &tablaFrecuencia, string texto){
+void Risk::crearTablaFrecuencia(map<char, long> &tablaFrecuencia, string texto){
     for(char simbolo: texto){
         tablaFrecuencia[simbolo]++;
     }
@@ -1106,7 +1107,7 @@ void Risk::guardarComprimido(string nombreArchivo){
     string todoElArchivoEnUnaCadena = crearCadenaDelArchivoTxt(nombreArchivo);
     // cout << "Creo cadena con archivo txt\n";
     // cout << todoElArchivoEnUnaCadena << endl;
-    unordered_map<char, long> tablaFrecuencia;
+    map<char, long> tablaFrecuencia;
     unordered_map<char, string> diccionarioHuffman;
     Nodo *raiz;
     crearTablaFrecuencia(tablaFrecuencia, todoElArchivoEnUnaCadena);
@@ -1121,30 +1122,49 @@ void Risk::guardarComprimido(string nombreArchivo){
     for(auto pair : diccionarioHuffman){
         cout << " " << pair.first << " - " << pair.second <<endl;
     }
-    //Obtener cantidad de caracteres diferentes
-    short cantCaracteresDiferentes = tablaFrecuencia.size();
-     //Obtener cantidad de caracteres de todo el archivo original
-    long cantCaracteres = todoElArchivoEnUnaCadena.size();
-     //Obtener codigo completo codificado
+    system("pause");
+    //Obtener codigo completo codificado
     string cadenaCodificada = generarCodigoCodificado(todoElArchivoEnUnaCadena,diccionarioHuffman);
     int cerosAdicionales = modificarCadena(cadenaCodificada);
     vector<bitset<8>> cadenaComprimida;
     //Se crean los bytes y se llena el vector "cadenaComprimida"
     pasarDeStringABytes(cadenaCodificada, cadenaComprimida);
-    
-    PartidaComprimida p;
-    p.cantCaracteresDiferentes = cantCaracteresDiferentes;
-    p.tablaFrecuencia = serializarMap(tablaFrecuencia);
-    cout << "Tabla en string: " << p.tablaFrecuencia << endl;
-    p.cantCaracteres = cantCaracteres;
-    p.cerosAdicionales = cerosAdicionales;
-    p.cadenaComprimida = serializarVector(cadenaComprimida);
-    
+
+    // for (int i = 0; i < cadenaComprimida.size(); i++) {
+    //     cout << "Byte # " << i << ": "<< cadenaComprimida[i] << endl;
+    // }
     nombreArchivo = "files/games/" + nombreArchivo + ".dat";
     ofstream archivoBin(nombreArchivo, ios::binary|ios::out);
 
-    if(archivoBin){
-        archivoBin.write(reinterpret_cast<char*>(&p), sizeof(PartidaComprimida));
+    if(archivoBin.is_open()){
+        //Obtener cantidad de caracteres diferentes (tamaño del mapa)
+        short cantCaracteresDiferentes = tablaFrecuencia.size();
+        cout << "Cantidad caracteres diferentes: " << cantCaracteresDiferentes << endl;
+        archivoBin.write(reinterpret_cast<const char*>(&cantCaracteresDiferentes), sizeof(short));
+         //Obtener cantidad de caracteres de todo el archivo original
+        long cantCaracteres = todoElArchivoEnUnaCadena.size();
+        cout << "Cantidad caracteres: " << cantCaracteres << endl;
+        archivoBin.write(reinterpret_cast<const char*>(&cantCaracteres), sizeof(long));
+        // Escribir los pares clave-valor de la tabla de frecuencia uno por uno
+        cout << "---- TABLA DE FRECUENCIA ----\n";
+        for (const auto& par : tablaFrecuencia) {
+            cout << "Caracter: " << par.first << " - Frecuencia: " << par.second << endl;
+            archivoBin.write(reinterpret_cast<const char*>(&par.first), sizeof(char));
+            archivoBin.write(reinterpret_cast<const char*>(&par.second), sizeof(long));
+        }
+        //Escribir el tamaño del vector
+        size_t tamanoVector = cadenaComprimida.size();
+        cout << "Cantidad de bytes: " << tamanoVector << endl;
+        archivoBin.write(reinterpret_cast<const char*>(&tamanoVector), sizeof(size_t));
+        // Escribir los elementos del vector uno por uno
+        for (const bitset<8>& byte : cadenaComprimida) {
+            // cout << "Byte # " << ": "<< byte << endl;
+            archivoBin.write(reinterpret_cast<const char*>(&byte), sizeof(bitset<8>));
+        }
+        //Escribir 0s adicionales en la cadena comprimida
+        cout << "Ceros adicionales: " << cerosAdicionales << endl;
+        archivoBin.write(reinterpret_cast<const char*>(&cerosAdicionales), sizeof(int));
+        system("pause");
         archivoBin.close();
     }else{
         cout << "No se pudo abrir el archivo!" << endl;
@@ -1190,44 +1210,74 @@ Nodo *Risk::getNode(char simbolo, int frecuencia, Nodo *izq, Nodo *der)
 void Risk::cargarComprimido(string nombreArchivo){
     string nombreArchivoOriginal = nombreArchivo;
     nombreArchivo = "files/games/" + nombreArchivo + ".dat";
-    PartidaComprimida partida;
     string cadenaCodificada = "";
-    unordered_map<char, long> tablaFrecuencia;
-    unordered_map<char, string> diccionarioHuffman;
+    map<char, long> tablaFrecuencia;
     Nodo *raiz;
+    bool lecturaOK = true;
+    short cantCaracteresDiferentes;
+    long cantCaracteres;
+    size_t tamanoVector; 
+    int cerosAdicionales;
+    vector<bitset<8>> cadenaComprimida;
 
     ifstream archivoBin(nombreArchivo, ios::binary);
-    cout << "despues del buffer\n";
 
-    if(archivoBin){
-        cout << "Abrio el archivo\n";
-        if(archivoBin.read(reinterpret_cast<char*>(&partida), sizeof(PartidaComprimida))){
-            cout << "Leyo partida\n";
-            cout << "Cantidad caracteres diferentes: " << partida.cantCaracteresDiferentes << endl;
-            cout << "Ceros adicionales: " << partida.cerosAdicionales << endl;
-            cout << "Cantidad caracteres: " << partida.cantCaracteres << endl;
-            cout << "Tabla en string: " << partida.tablaFrecuencia << endl;
-            tablaFrecuencia = deserializarMap(partida.tablaFrecuencia);
-            vector<bitset<8>> cadenaComprimida = deserializarVector(partida.cadenaComprimida);
-            // for(const auto& pair: tablaFrecuencia){
-            //     cout << "Simbolo " << pair.first << " - Frecuencia " << pair.second << endl; 
-            // }
-            
-            cout << "Asigno tabla de frecuencia\n";
+    if(archivoBin.is_open()){
+        if(archivoBin.read(reinterpret_cast<char*>(&cantCaracteresDiferentes), sizeof(short))){
+            cout << "Cantidad caracteres diferentes: " << cantCaracteresDiferentes << endl;
+        }else{
+            lecturaOK = false;
+        }
+        if(archivoBin.read(reinterpret_cast<char*>(&cantCaracteres), sizeof(long)) && lecturaOK){
+            cout << "Cantidad caracteres: " << cantCaracteres << endl;
+        }else{
+            lecturaOK = false;
+        }
+        cout << "---- TABLA DE FRECUENCIA ----\n";
+        for (int i = 0; i < cantCaracteresDiferentes; i++) {
+            char clave;
+            long valor;
+            if(archivoBin.read(reinterpret_cast<char*>(&clave), sizeof(char)) && archivoBin.read(reinterpret_cast<char*>(&valor), sizeof(long)) && lecturaOK){
+                cout << "Caracter: " << clave << " - Frecuencia: " << valor << endl;
+                tablaFrecuencia.insert(make_pair(clave, valor));
+            }else{
+                lecturaOK = false;
+            }
+        }
+        if(archivoBin.read(reinterpret_cast<char*>(&tamanoVector), sizeof(size_t)) && lecturaOK){
+            cout << "Cantidad de bytes: " << tamanoVector << endl;
+        }else{
+            lecturaOK = false;
+        }
+        
+        cadenaComprimida.resize(tamanoVector);
+        for (int i = 0; i < tamanoVector; i++) {
+            if(archivoBin.read(reinterpret_cast<char*>(&cadenaComprimida[i]), sizeof(bitset<8>)) && lecturaOK){
+                cout << "Byte # " << i << ": "<< cadenaComprimida[i] << endl;
+            }else{
+                lecturaOK = false;
+            }
+        }
+        if(archivoBin.read(reinterpret_cast<char*>(&cerosAdicionales), sizeof(int)) && lecturaOK){
+            cout << "Ceros adicionales: " << cerosAdicionales << endl;
+        }else{
+            lecturaOK = false;
+        }
+        system("pause");
+        if(lecturaOK){
             crearArbol(tablaFrecuencia, raiz);
-            cout << "Creo arbol\n";
             for(bitset<8> byte : cadenaComprimida){
                 cadenaCodificada += byte.to_string();
             }
-            cout << "Leyo toda la cadena codificada\n";
-            if(partida.cerosAdicionales != 0){
+            if(cerosAdicionales != 0){
                 //Quitando ceros adicionales
-                cadenaCodificada.erase(cadenaCodificada.length() - partida.cerosAdicionales);
+                cadenaCodificada.erase(cadenaCodificada.length() - cerosAdicionales);
             }
-            cout << "Quito 0s\n";
             string textoNormal;
             textoNormal = pasarDeCodificadaANormal(cadenaCodificada, raiz);
-            nombreArchivoOriginal = "files/games/" + nombreArchivo + ".txt";
+            cout << "El texto decodificado es: " << endl;
+            cout << textoNormal;
+            nombreArchivoOriginal = "files/games/" + nombreArchivoOriginal + ".txt";
             escribirEnArchivoDescompresion(nombreArchivoOriginal, textoNormal);
         }
         archivoBin.close();
@@ -1247,53 +1297,15 @@ void Risk::escribirEnArchivoDescompresion(string nombreArchivo, string textoNorm
     }
 
     cout << "El archivo se creo correctamente!" << endl;
+    system("pause");
 }
 
 string Risk::pasarDeCodificadaANormal(string cadenaCodificada, Nodo* raiz){
     int index = -1;
     string textoNormal = "";
-    cout << "El texto decodificado es: \n";
     while(index < (int)cadenaCodificada.size() - 2){
         decodificar(raiz, index, cadenaCodificada, textoNormal);
     }
     
     return textoNormal;
-}
-
-string Risk::serializarMap(const unordered_map<char, long>& mapa) {
-    ostringstream ss;
-    for (const auto& par : mapa) {
-        ss << par.first << ":" << par.second << ",";
-    }
-    return ss.str();
-}
-
-unordered_map<char, long> Risk::deserializarMap(const string& str) {
-    unordered_map<char, long> mapa;
-    istringstream ss(str);
-    char simbolo;
-    long frecuencia;
-    char colon;
-    char comma;
-    while (ss >> simbolo >> colon >> frecuencia >> comma) {
-        mapa[simbolo] = frecuencia;
-    }
-    return mapa;
-}
-
-string Risk::serializarVector(const vector<bitset<8>>& vector) {
-    ostringstream ss;
-    for (const bitset<8>& byte : vector) {
-        ss << byte.to_string();
-    }
-    return ss.str();
-}
-
-vector<bitset<8>> Risk::deserializarVector(const string& str) {
-    vector<bitset<8>> vector;
-    for (size_t i = 0; i < str.size(); i += 8) {
-        bitset<8> byte(str.substr(i, 8));
-        vector.push_back(byte);
-    }
-    return vector;
 }
