@@ -408,7 +408,9 @@ bool Risk::turno(Risk &juego, string id){
         //Menu de ataque
         system("cls");
         cout << "\n\n2da FASE: Ataque\n";
+        system("pause");
         do {
+            system("cls");
             cout << "\n==== MENU DE ATAQUE ====\n";
             cout << "Que desea hacer?\n";
             cout << "1: Atacar un territorio\n";
@@ -418,6 +420,7 @@ bool Risk::turno(Risk &juego, string id){
             cin >> respuesta;
         
             if (respuesta == 1) {
+                system("cls");
                 cout << "==== Elige un territorio propio el cual LIMITE con el territorio que desees ATACAR ====\n";
                 jugador.imprimirTerritorios(jugador);
                 cout << "$ ";
@@ -462,7 +465,7 @@ bool Risk::turno(Risk &juego, string id){
                 cout << "Respuesta no válida.\n";
             }
         } while (menuAtaque);
-
+        system("cls");
         cout << "\n\n3ra FASE : Redistribucion\n";
         do{
             cout << "\n==== REDISTRIBUCION ====\n";
@@ -484,6 +487,7 @@ void Risk::redistribuirTropas(Risk& juego, Jugador& jugador){
     int codigoPrimerTerritorio, codigoSegundoTerritorio, cantTropas;
     bool redistribucionExitosa = false;
     do{
+        system("cls");
         cout << "====== REDISTRIBUCION DE TROPAS ======\n\n";
         cout << "Asi se encuentran ubicadas tus tropas en el mapa:\n";
         jugador.imprimirTerritorios(jugador);
