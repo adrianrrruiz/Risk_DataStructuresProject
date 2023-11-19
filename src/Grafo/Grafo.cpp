@@ -2,19 +2,15 @@
 
 vector<vector<double>> Grafo::floydWarshall()
 {
-    cout <<"pene" << endl;
     vector<vector<double>> distancias;
-    int n = vertices.size();
-    cout <<"pene" << endl;
+    int n = vertices.size() + 1;
     distancias.resize(n, vector<double>(n, numeric_limits<double>::infinity()));
 
-    cout <<"pene" << endl;
     // Initialize the diagonal elements to 0
     for (int i = 0; i < n; i++)
     {
         distancias[i][i] = 0;
     }
-    cout <<"pene" << endl;
 
     // Set the initial distances based on the existing edges
     for (const auto &aristaPar : aristas)
@@ -27,7 +23,6 @@ vector<vector<double>> Grafo::floydWarshall()
         distancias[origen][destino] = arista.peso;
         cout << arista.peso << " " << endl;
     }
-    cout <<"pene" << endl;
 
     // Perform the Floyd-Warshall algorithm
     for (int i = 0; i < n; i++)
@@ -45,7 +40,6 @@ vector<vector<double>> Grafo::floydWarshall()
             }
         }
     }
-    cout <<"pene" << endl;
 
     return distancias;
 }

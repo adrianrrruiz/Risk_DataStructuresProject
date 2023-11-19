@@ -1409,8 +1409,8 @@ void Risk::costo_Conquista(Risk &juego, Jugador jugador, int codigo){
     int territorioDado =  codigo;
     int territorioMasCercano = -1; 
     double distanciaMasCorta = std::numeric_limits<double>::infinity();
-    for (Pais territorio : jugador.territorios) {
-        int territorioControlado = territorio.codigo;
+    for (int i = 0; i < jugador.territorios.size();i++) {
+        int territorioControlado = jugador.territorios[i].codigo;
         if (distancias[territorioControlado][territorioDado] < distanciaMasCorta) {
             distanciaMasCorta = distancias[territorioControlado][territorioDado];
             territorioMasCercano = territorioControlado;
