@@ -7,6 +7,9 @@
 #include "Carta.h"
 #include "Jugador.h"
 #include "Nodo.h"
+#include "Grafo\\Grafo.h"
+#include "Grafo\\Vertice.h"
+#include "Grafo\\Arista.h"
 #include <fstream>
 #include <sstream>
 #include <algorithm>
@@ -87,12 +90,22 @@ public:
     void escribirEnArchivoDescompresion(string nombreArchivo, string textoNormal);
     string pasarDeCodificadaANormal(string cadenaCodificada, Nodo *raiz);
 
+    //tercer avance
+    void crearGrafo(Risk &juego);
+    void mostrarGrafo(Risk &juego);
+    void actualizarGrafo(Risk &juego);
+    void imprimirDistancias(vector<vector<double>> distancias);
+    void costo_Conquista(Risk &juego, Jugador jugador, int codigo);
+    void imprimirTerritoriosDeOtrosJugadores(Risk &juego, Jugador jugador1);
+    bool codigoSolicitadoAdecuado(Risk &juego,Jugador jugador1,int codigo);
+
     vector<int> dados(int cantidad);
     vector<Continente> continentes;
     vector<Pais> paisesDisponibles;
     vector<Jugador> jugadores;
     vector <Carta> cartas;
     vector <string> colores = {"Verde", "Azul", "Rojo", "Amarillo", "Negro", "Gris"};
+    Grafo grafo;
     int cantidadJugadores;
     int caballoDorado;
 };
