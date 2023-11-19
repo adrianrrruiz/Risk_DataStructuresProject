@@ -100,7 +100,7 @@ void Risk::leerDistribucionCartas(Risk &juego) {
             Carta carta;
             iss >> carta.codigoPais;
             iss.ignore(); // Ignorar la coma
-            std::getline(iss, carta.figura);
+            getline(iss, carta.figura);
             juego.cartas.push_back(carta);
         }
         archivo.close();
@@ -418,7 +418,8 @@ bool Risk::turno(Risk &juego, string id){
             cout << "\n==== MENU DE ATAQUE ====\n";
             cout << "Que desea hacer?\n";
             cout << "1: Atacar un territorio\n";
-            cout << "2: ver la conquista mas barata";
+            cout << "2: Ver lo que me cuesta conquistar un territorio\n";
+            cout << "3: Ver la conquista mas barata\n";
             cout << "0: Dejar de atacar\n";
             cout << "$ ";
             
@@ -464,18 +465,27 @@ bool Risk::turno(Risk &juego, string id){
                 }
             }
             else if (respuesta == 2){
-            int codigo;
+            int territorioDado;
             do{
                 system("cls");
                 imprimirTerritoriosDeOtrosJugadores(juego, jugador);
-                cout << "ingrese el codigo del pais el cual desea conquistar: " << endl;
-                cout <<"$";
-                cin >> codigo;
-            }while(!codigoSolicitadoAdecuado(juego,jugador,codigo));
-
-            costo_Conquista(juego, jugador, codigo);
+                cout << "Ingrese el codigo del pais el cual desea conquistar: " << endl;
+                cout <<"$ ";
+                cin >> territorioDado;
+            }while(!codigoSolicitadoAdecuado(juego,jugador,territorioDado));
+                int territorioMasCercano;
+                double distanciaMasCorta;
+                costo_Conquista(juego, jugador, territorioDado, territorioMasCercano, distanciaMasCorta);
+                cout << "Para conquistar el territorio " << territorioDado << ", debe atacar desde " << territorioMasCercano << " . Debe conquistar " << distanciaMasCorta << " unidades de ejercito.\n";
+                system("pause");
             }
-   
+            else if (respuesta == 3){
+                int territorioMasCercano, territorioDado;
+                double distanciaMasCorta = 1000;
+                conquistaMasBarata(juego, jugador, territorioDado, territorioMasCercano, distanciaMasCorta);
+                cout << "La conquista mas barata es avanzar sobre el territorio " << territorioDado << " desde el territorio " << territorioMasCercano << " . Debe conquistar " << distanciaMasCorta << " unidades de ejercito.\n";
+                system("pause");
+            }
             else if (respuesta == 0) {
                 menuAtaque = false;
             }
@@ -710,7 +720,7 @@ bool Risk::ataque(Pais & ataca, Pais & defiende, Jugador& atacante, Jugador& def
     return conquisto;
 }
 void Risk::eliminarJugador(Risk& juego,const string& nombre) {
-        juego.jugadores.erase(std::remove_if(juego.jugadores.begin(), juego.jugadores.end(),
+        juego.jugadores.erase(remove_if(juego.jugadores.begin(), juego.jugadores.end(),
             [&nombre](const Jugador& jugador) {
                 return jugador.nombre == nombre;
             }), juego.jugadores.end());
@@ -819,7 +829,7 @@ vector<int> Risk::dados(int cantidad){
 }
 
 Carta Risk::cartaAleatoria(Risk& juego){
-    int numeroAleatorio = std::rand() % 42 + 1;
+    int numeroAleatorio = rand() % 42 + 1;
     return juego.cartas[numeroAleatorio];
 }
 
@@ -991,7 +1001,7 @@ bool Risk::cargarPartida(Risk& juego, string nombreArchivo){
                 string relacion;
                 while (getline(relacionesStream, relacion, ',')) {
                     cout << relacion << ",";
-                    paisAux.relaciones.push_back(std::stoi(relacion));
+                    paisAux.relaciones.push_back(stoi(relacion));
                 }
                 jugador.territorios.push_back(paisAux);
             }
@@ -1012,6 +1022,8 @@ bool Risk::cargarPartida(Risk& juego, string nombreArchivo){
         }
         archivo.close();
         corregirCartas(juego);
+        crearGrafo(juego);
+        actualizarGrafo(juego);
         cout << "Se ha leido el archivo exitosamente." << endl;
         return true;
     } else {
@@ -1369,7 +1381,7 @@ void Risk::mostrarGrafo(Risk &juego){
             cout << "ID del vertice: " << par.first << ", Valor: " << par.second.id << endl;
         }
 
-        std::cout << "\nAristas:" << endl;
+        cout << "\nAristas:" << endl;
         for (const auto& par : juego.grafo.aristas) {
             cout << "ID de la arista: " << par.first << ", Origen: " << par.second.idOrigen
                       << ", Destino: " << par.second.idDestino << ", Peso: " << par.second.peso << endl;
@@ -1392,23 +1404,22 @@ void Risk::imprimirDistancias(vector<vector<double>> distancias){
         int n = distancias.size();
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n; ++j) {
-                if (distancias[i][j] == std::numeric_limits<double>::infinity()) {
-                    std::cout << "Infinito ";
+                if (distancias[i][j] == numeric_limits<double>::infinity()) {
+                    cout << "Infinito ";
                 } else {
-                    std::cout << distancias[i][j] << " ";
+                    cout << distancias[i][j] << " ";
                 }
             }
-            std::cout << std::endl;
+            cout << endl;
         }
 }
 
-void Risk::costo_Conquista(Risk &juego, Jugador jugador, int codigo){
+void Risk::costo_Conquista(Risk &juego, Jugador jugador, int &territorioDado, int &territorioMasCercano, double &distanciaMasCorta){
     actualizarGrafo(juego);
     auto distancias = juego.grafo.floydWarshall();
-    imprimirDistancias(distancias);
-    int territorioDado =  codigo;
-    int territorioMasCercano = -1; 
-    double distanciaMasCorta = std::numeric_limits<double>::infinity();
+    //imprimirDistancias(distancias);
+    territorioMasCercano = -1; 
+    distanciaMasCorta = numeric_limits<double>::infinity();
     for (int i = 0; i < jugador.territorios.size();i++) {
         int territorioControlado = jugador.territorios[i].codigo;
         if (distancias[territorioControlado][territorioDado] < distanciaMasCorta) {
@@ -1416,13 +1427,12 @@ void Risk::costo_Conquista(Risk &juego, Jugador jugador, int codigo){
             territorioMasCercano = territorioControlado;
         }
     }
-    cout << "el territorio mas cercano a " << territorioDado << "es: " << territorioMasCercano << " con un costo de: " << distanciaMasCorta;
 }
 
 void Risk::imprimirTerritoriosDeOtrosJugadores(Risk &juego, Jugador jugador1){
     for(const Jugador &jugador: juego.jugadores){
         if(jugador1.nombre != jugador.nombre){
-            cout << "Terrotorios de " << jugador.nombre << endl;
+            cout << "Territorios de " << jugador.nombre << endl;
             for(const Pais &pais : jugador.territorios){
                 cout << pais.codigo <<": " <<pais.nombre << endl;
             }
@@ -1441,4 +1451,22 @@ bool Risk::codigoSolicitadoAdecuado(Risk &juego,Jugador jugador1, int codigo){
         }   
     }
     return false;
+}
+
+void Risk::conquistaMasBarata(Risk &juego, Jugador jugador1, int &territorioDado, int &territorioMasCercano, double &distanciaMasCorta){
+    int territorioOrigen, territorioDestino;
+    double costoUnidades;
+    for(const Jugador &jugador: juego.jugadores){
+        if(jugador1.nombre != jugador.nombre){
+            for(const Pais &pais : jugador.territorios){
+                territorioDestino = pais.codigo;
+                costo_Conquista(juego, jugador1, territorioDestino, territorioOrigen, costoUnidades);
+                if(costoUnidades < distanciaMasCorta){
+                    distanciaMasCorta = costoUnidades;
+                    territorioMasCercano = territorioOrigen;
+                    territorioDado = territorioDestino;
+                }
+            }
+        }   
+    }
 }

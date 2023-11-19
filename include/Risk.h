@@ -95,9 +95,10 @@ public:
     void mostrarGrafo(Risk &juego);
     void actualizarGrafo(Risk &juego);
     void imprimirDistancias(vector<vector<double>> distancias);
-    void costo_Conquista(Risk &juego, Jugador jugador, int codigo);
+    void costo_Conquista(Risk &juego, Jugador jugador, int &territorioDado, int &territorioMasCercano, double &distanciaMasCorta);
     void imprimirTerritoriosDeOtrosJugadores(Risk &juego, Jugador jugador1);
     bool codigoSolicitadoAdecuado(Risk &juego,Jugador jugador1,int codigo);
+    void conquistaMasBarata(Risk &juego, Jugador jugador1, int &territorioDado, int &territorioMasCercano, double &distanciaMasCorta);
 
     vector<int> dados(int cantidad);
     vector<Continente> continentes;

@@ -17,11 +17,8 @@ vector<vector<double>> Grafo::floydWarshall()
     {
         const Arista &arista = aristaPar.second;
         int origen = arista.idOrigen;
-        cout << origen << " ";
         int destino = arista.idDestino;
-        cout << destino << " ";
         distancias[origen][destino] = arista.peso;
-        cout << arista.peso << " " << endl;
     }
 
     // Perform the Floyd-Warshall algorithm
