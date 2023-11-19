@@ -408,7 +408,9 @@ bool Risk::turno(Risk &juego, string id){
         //Menu de ataque
         system("cls");
         cout << "\n\n2da FASE: Ataque\n";
+        system("pause");
         do {
+            system("cls");
             cout << "\n==== MENU DE ATAQUE ====\n";
             cout << "Que desea hacer?\n";
             cout << "1: Atacar un territorio\n";
@@ -418,6 +420,7 @@ bool Risk::turno(Risk &juego, string id){
             cin >> respuesta;
         
             if (respuesta == 1) {
+                system("cls");
                 cout << "==== Elige un territorio propio el cual LIMITE con el territorio que desees ATACAR ====\n";
                 jugador.imprimirTerritorios(jugador);
                 cout << "$ ";
@@ -462,7 +465,7 @@ bool Risk::turno(Risk &juego, string id){
                 cout << "Respuesta no válida.\n";
             }
         } while (menuAtaque);
-
+        system("cls");
         cout << "\n\n3ra FASE : Redistribucion\n";
         do{
             cout << "\n==== REDISTRIBUCION ====\n";
@@ -484,6 +487,7 @@ void Risk::redistribuirTropas(Risk& juego, Jugador& jugador){
     int codigoPrimerTerritorio, codigoSegundoTerritorio, cantTropas;
     bool redistribucionExitosa = false;
     do{
+        system("cls");
         cout << "====== REDISTRIBUCION DE TROPAS ======\n\n";
         cout << "Asi se encuentran ubicadas tus tropas en el mapa:\n";
         jugador.imprimirTerritorios(jugador);
@@ -1005,3 +1009,310 @@ void Risk::corregirCartas(Risk& juego){
         }
     }
 }
+<<<<<<< HEAD
+=======
+
+//Codificar caracteres
+void Risk::codificar(Nodo *raiz, string str, unordered_map<char, string> &diccionarioHuffman){
+    if(raiz == nullptr){
+        return;
+    }
+    if(raiz->izq == nullptr && raiz->der == nullptr){
+        diccionarioHuffman[raiz->simbolo] = str;
+    }
+    codificar(raiz->izq, str + "0", diccionarioHuffman);
+    codificar(raiz->der, str + "1", diccionarioHuffman); 
+}
+
+//Pasar de codificación a caracteres
+void Risk::decodificar(Nodo *raiz, int &indice, string str, string &textoNormal)
+{
+    if(raiz == nullptr){
+        return;
+    }
+    if(raiz->izq == nullptr && raiz->der == nullptr){
+        textoNormal += raiz->simbolo;
+        return;
+    }
+    indice++;
+    if(str[indice] == '0'){
+        decodificar(raiz->izq, indice, str, textoNormal);
+    }else{
+        decodificar(raiz->der, indice, str, textoNormal);
+    }
+}
+
+void Risk::crearArbol(map<char, long> &tablaFrecuencia, Nodo*&raiz)
+{
+    priority_queue<Nodo*, vector<Nodo*>, comp> colaPrioridad;
+    //Llenar cola de prioridad
+    for(auto pair: tablaFrecuencia){
+        //Inserta los nodos a la cola de prioridad con sus hijos der e izq en nullptr
+        //pair.first = simbolo
+        //pair.second = frecuencia
+        colaPrioridad.push(getNode(pair.first, pair.second, nullptr, nullptr));
+    }
+
+    priority_queue<Nodo*, vector<Nodo*>, comp> copiaPrioridad = colaPrioridad;
+    cout << "Recorriendo cola de prioridad \n";
+    system("pause");
+    while (!copiaPrioridad.empty()) {
+        Nodo* elemento = copiaPrioridad.top();
+        cout << "simbolo " << elemento->simbolo << "- frecuencia " << elemento->frecuencia<< endl;
+        copiaPrioridad.pop();
+    }
+    system("pause");
+    //Con los dos primeros elementos de la cola, crea un nuevo nodo y su raiz es la suma de sus frecuencias
+    while(colaPrioridad.size() != 1){
+        Nodo *izq = colaPrioridad.top();
+        colaPrioridad.pop();
+        Nodo *der = colaPrioridad.top();
+        colaPrioridad.pop();
+        
+        int sum = izq->frecuencia + der->frecuencia;
+        //El valor del simbolo es '\0' para todos los nodos intermedios o raiz
+        colaPrioridad.push(getNode('\0', sum, izq, der));
+    }
+    
+    raiz = colaPrioridad.top();
+}
+
+void Risk::crearTablaFrecuencia(map<char, long> &tablaFrecuencia, string texto){
+    for(char simbolo: texto){
+        tablaFrecuencia[simbolo]++;
+    }
+}
+
+string Risk::generarCodigoCodificado(string texto, unordered_map<char, string> diccionarioHuffman){
+    string str = "";
+    for(char simbolo: texto){
+        str += diccionarioHuffman[simbolo];
+    }
+    return str;
+}
+
+string Risk::crearCadenaDelArchivoTxt(string nombreArchivo){
+    nombreArchivo = "files/games/" + nombreArchivo + ".txt";
+    ifstream archivo(nombreArchivo);
+    string cadenaCompleta = "";
+    // Verifica si el archivo se abrió correctamente
+    if (archivo) {
+        string linea;
+        while (getline(archivo, linea)) {
+            cadenaCompleta += linea + "\n";
+        }
+        // Cierra el archivo
+        archivo.close();
+    } else {
+        cout << "No se pudo leer el archivo" << endl;
+    }
+    return cadenaCompleta;
+}
+
+void Risk::guardarComprimido(string nombreArchivo){
+    string todoElArchivoEnUnaCadena = crearCadenaDelArchivoTxt(nombreArchivo);
+    // cout << "Creo cadena con archivo txt\n";
+    // cout << todoElArchivoEnUnaCadena << endl;
+    map<char, long> tablaFrecuencia;
+    unordered_map<char, string> diccionarioHuffman;
+    Nodo *raiz;
+    crearTablaFrecuencia(tablaFrecuencia, todoElArchivoEnUnaCadena);
+    // cout << "Creo tabla frecuencia\n";
+    // for (auto pair : tablaFrecuencia){
+    //     cout << pair.first << " - " << pair.second << endl;
+    // }
+    crearArbol(tablaFrecuencia, raiz);
+    codificar(raiz, "", diccionarioHuffman);
+    
+    cout << "\nLos codigos de Huffman son:\n\n";
+    for(auto pair : diccionarioHuffman){
+        cout << " " << pair.first << " - " << pair.second <<endl;
+    }
+    system("pause");
+    //Obtener codigo completo codificado
+    string cadenaCodificada = generarCodigoCodificado(todoElArchivoEnUnaCadena,diccionarioHuffman);
+    int cerosAdicionales = modificarCadena(cadenaCodificada);
+    vector<bitset<8>> cadenaComprimida;
+    //Se crean los bytes y se llena el vector "cadenaComprimida"
+    pasarDeStringABytes(cadenaCodificada, cadenaComprimida);
+
+    // for (int i = 0; i < cadenaComprimida.size(); i++) {
+    //     cout << "Byte # " << i << ": "<< cadenaComprimida[i] << endl;
+    // }
+    nombreArchivo = "files/games/" + nombreArchivo + ".dat";
+    ofstream archivoBin(nombreArchivo, ios::binary|ios::out);
+
+    if(archivoBin.is_open()){
+        //Obtener cantidad de caracteres diferentes (tamaño del mapa)
+        short cantCaracteresDiferentes = tablaFrecuencia.size();
+        cout << "Cantidad caracteres diferentes: " << cantCaracteresDiferentes << endl;
+        archivoBin.write(reinterpret_cast<const char*>(&cantCaracteresDiferentes), sizeof(short));
+         //Obtener cantidad de caracteres de todo el archivo original
+        long cantCaracteres = todoElArchivoEnUnaCadena.size();
+        cout << "Cantidad caracteres: " << cantCaracteres << endl;
+        archivoBin.write(reinterpret_cast<const char*>(&cantCaracteres), sizeof(long));
+        // Escribir los pares clave-valor de la tabla de frecuencia uno por uno
+        cout << "---- TABLA DE FRECUENCIA ----\n";
+        for (const auto& par : tablaFrecuencia) {
+            cout << "Caracter: " << par.first << " - Frecuencia: " << par.second << endl;
+            archivoBin.write(reinterpret_cast<const char*>(&par.first), sizeof(char));
+            archivoBin.write(reinterpret_cast<const char*>(&par.second), sizeof(long));
+        }
+        //Escribir el tamaño del vector
+        size_t tamanoVector = cadenaComprimida.size();
+        cout << "Cantidad de bytes: " << tamanoVector << endl;
+        archivoBin.write(reinterpret_cast<const char*>(&tamanoVector), sizeof(size_t));
+        // Escribir los elementos del vector uno por uno
+        for (const bitset<8>& byte : cadenaComprimida) {
+            // cout << "Byte # " << ": "<< byte << endl;
+            archivoBin.write(reinterpret_cast<const char*>(&byte), sizeof(bitset<8>));
+        }
+        //Escribir 0s adicionales en la cadena comprimida
+        cout << "Ceros adicionales: " << cerosAdicionales << endl;
+        archivoBin.write(reinterpret_cast<const char*>(&cerosAdicionales), sizeof(int));
+        system("pause");
+        archivoBin.close();
+    }else{
+        cout << "No se pudo abrir el archivo!" << endl;
+    }
+}
+
+//Añadir 0s adicionales para que sea multiplo de 8
+int Risk::modificarCadena(string &cadenaCodificada){
+    if(cadenaCodificada.size() % 8 != 0){
+        //Toca agregar 0s
+        int faltantes =  8 - (cadenaCodificada.size()%8);
+        for(short i=0 ;i <faltantes ;i++){
+            cadenaCodificada+="0";
+        }
+        return faltantes;
+    }
+    return 0;
+}
+
+void Risk::pasarDeStringABytes(string cadenaCodificada, vector<bitset<8>> &cadenaComprimida){
+    int cantBytes = cadenaCodificada.size() / 8;
+    cout << "Cantidad de bytes: " << cantBytes << endl;
+    for(int i = 0; i < cadenaCodificada.length(); i += 8){
+        string byte = cadenaCodificada.substr(i,8);
+        bitset<8> byteReal(byte);
+        cadenaComprimida.push_back(byteReal);
+    }
+}
+
+//Asignar los nuevos nodos en el árbol de Huffman
+Nodo *Risk::getNode(char simbolo, int frecuencia, Nodo *izq, Nodo *der)
+{
+    Nodo* nodo = new Nodo();
+    
+    nodo->simbolo = simbolo;
+    nodo->frecuencia = frecuencia;
+    nodo->izq = izq;
+    nodo->der = der;
+
+    return nodo;
+}
+
+void Risk::cargarComprimido(string nombreArchivo){
+    string nombreArchivoOriginal = nombreArchivo;
+    nombreArchivo = "files/games/" + nombreArchivo + ".dat";
+    string cadenaCodificada = "";
+    map<char, long> tablaFrecuencia;
+    Nodo *raiz;
+    bool lecturaOK = true;
+    short cantCaracteresDiferentes;
+    long cantCaracteres;
+    size_t tamanoVector; 
+    int cerosAdicionales;
+    vector<bitset<8>> cadenaComprimida;
+
+    ifstream archivoBin(nombreArchivo, ios::binary);
+
+    if(archivoBin.is_open()){
+        if(archivoBin.read(reinterpret_cast<char*>(&cantCaracteresDiferentes), sizeof(short))){
+            cout << "Cantidad caracteres diferentes: " << cantCaracteresDiferentes << endl;
+        }else{
+            lecturaOK = false;
+        }
+        if(archivoBin.read(reinterpret_cast<char*>(&cantCaracteres), sizeof(long)) && lecturaOK){
+            cout << "Cantidad caracteres: " << cantCaracteres << endl;
+        }else{
+            lecturaOK = false;
+        }
+        cout << "---- TABLA DE FRECUENCIA ----\n";
+        for (int i = 0; i < cantCaracteresDiferentes; i++) {
+            char clave;
+            long valor;
+            if(archivoBin.read(reinterpret_cast<char*>(&clave), sizeof(char)) && archivoBin.read(reinterpret_cast<char*>(&valor), sizeof(long)) && lecturaOK){
+                cout << "Caracter: " << clave << " - Frecuencia: " << valor << endl;
+                tablaFrecuencia.insert(make_pair(clave, valor));
+            }else{
+                lecturaOK = false;
+            }
+        }
+        if(archivoBin.read(reinterpret_cast<char*>(&tamanoVector), sizeof(size_t)) && lecturaOK){
+            cout << "Cantidad de bytes: " << tamanoVector << endl;
+        }else{
+            lecturaOK = false;
+        }
+        
+        cadenaComprimida.resize(tamanoVector);
+        for (int i = 0; i < tamanoVector; i++) {
+            if(archivoBin.read(reinterpret_cast<char*>(&cadenaComprimida[i]), sizeof(bitset<8>)) && lecturaOK){
+                cout << "Byte # " << i << ": "<< cadenaComprimida[i] << endl;
+            }else{
+                lecturaOK = false;
+            }
+        }
+        if(archivoBin.read(reinterpret_cast<char*>(&cerosAdicionales), sizeof(int)) && lecturaOK){
+            cout << "Ceros adicionales: " << cerosAdicionales << endl;
+        }else{
+            lecturaOK = false;
+        }
+        system("pause");
+        if(lecturaOK){
+            crearArbol(tablaFrecuencia, raiz);
+            for(bitset<8> byte : cadenaComprimida){
+                cadenaCodificada += byte.to_string();
+            }
+            if(cerosAdicionales != 0){
+                //Quitando ceros adicionales
+                cadenaCodificada.erase(cadenaCodificada.length() - cerosAdicionales);
+            }
+            string textoNormal;
+            textoNormal = pasarDeCodificadaANormal(cadenaCodificada, raiz);
+            cout << "El texto decodificado es: " << endl;
+            cout << textoNormal;
+            nombreArchivoOriginal = "files/games/" + nombreArchivoOriginal + ".txt";
+            escribirEnArchivoDescompresion(nombreArchivoOriginal, textoNormal);
+        }
+        archivoBin.close();
+    }else{
+        cout << "No se pudo abrir el archivo!" << endl;
+    }
+}
+
+void Risk::escribirEnArchivoDescompresion(string nombreArchivo, string textoNormal){
+    ofstream archivoDescomprimido(nombreArchivo); 
+
+    if(archivoDescomprimido) { //Verificar que si abre
+        archivoDescomprimido << textoNormal;
+        archivoDescomprimido.close(); 
+    }else {
+        cout << "No se pudo abrir el archivo" << endl;
+    }
+
+    cout << "El archivo se creo correctamente!" << endl;
+    system("pause");
+}
+
+string Risk::pasarDeCodificadaANormal(string cadenaCodificada, Nodo* raiz){
+    int index = -1;
+    string textoNormal = "";
+    while(index < (int)cadenaCodificada.size() - 2){
+        decodificar(raiz, index, cadenaCodificada, textoNormal);
+    }
+    
+    return textoNormal;
+}
+>>>>>>> 7458d80b0068c339dc252957966779adf602ec5e
