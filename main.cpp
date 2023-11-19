@@ -57,10 +57,7 @@ int main(int argc, char* argv[]) {
                 cout << "\ninicializar -> Inicializa el juego con los datos contenidos en el archivo identificado por <nombre_archivo>\n\n";
             }else{
                 if (!inicializado){
-<<<<<<< HEAD
-=======
                     juego.cargarComprimido(param1); // Para probar inicializar con archivo binario
->>>>>>> 7458d80b0068c339dc252957966779adf602ec5e
                     bool finalizarInicializacion= juego.cargarPartida(juego,param1);
                     if(finalizarInicializacion){
                         cout << "\nEl juego se ha inicializado correctamente!\n\n";

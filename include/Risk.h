@@ -7,6 +7,9 @@
 #include "Carta.h"
 #include "Jugador.h"
 #include "Nodo.h"
+#include "Grafo\\Grafo.h"
+#include "Grafo\\Vertice.h"
+#include "Grafo\\Arista.h"
 #include <fstream>
 #include <sstream>
 #include <algorithm>
@@ -73,8 +76,6 @@ public:
     void guardarPartida(Risk& juego, string nombreArchivo);
     bool cargarPartida(Risk& juego, string nombreArchivo);
     void corregirCartas(Risk& juego);
-<<<<<<< HEAD
-=======
     void codificar(Nodo *raiz, string str, unordered_map<char, string> &CodigoHuffman);
     void decodificar(Nodo *raiz, int &indice, string str, string &textoNormal);
     void crearArbol(map<char, long> &tablaFrecuencia, Nodo *&raiz);
@@ -88,7 +89,15 @@ public:
     void cargarComprimido(string nombreArchivo);
     void escribirEnArchivoDescompresion(string nombreArchivo, string textoNormal);
     string pasarDeCodificadaANormal(string cadenaCodificada, Nodo *raiz);
->>>>>>> 7458d80b0068c339dc252957966779adf602ec5e
+
+    //tercer avance
+    void crearGrafo(Risk &juego);
+    void mostrarGrafo(Risk &juego);
+    void actualizarGrafo(Risk &juego);
+    void imprimirDistancias(vector<vector<double>> distancias);
+    void costo_Conquista(Risk &juego, Jugador jugador, int codigo);
+    void imprimirTerritoriosDeOtrosJugadores(Risk &juego, Jugador jugador1);
+    bool codigoSolicitadoAdecuado(Risk &juego,Jugador jugador1,int codigo);
 
     vector<int> dados(int cantidad);
     vector<Continente> continentes;
@@ -96,6 +105,7 @@ public:
     vector<Jugador> jugadores;
     vector <Carta> cartas;
     vector <string> colores = {"Verde", "Azul", "Rojo", "Amarillo", "Negro", "Gris"};
+    Grafo grafo;
     int cantidadJugadores;
     int caballoDorado;
 };
