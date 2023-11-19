@@ -5,6 +5,10 @@ class Arista{
     public:
     int idOrigen;
     int idDestino;
+    int peso;
+
+    void setPeso(int peso);
+    int getPeso ();
 };
 
 #endif  // ARISTA_H

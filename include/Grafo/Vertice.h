@@ -3,7 +3,7 @@
 
 class Vertice{
     public:
-    int id, cantTropas;
+    int id;
 };
 
 #endif  // VERTICE_H

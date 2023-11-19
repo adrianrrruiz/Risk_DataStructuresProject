@@ -165,6 +165,7 @@ bool Risk::inicializar(Risk &juego){
     leerRelaciones(juego);
     crearPaisesDisponibles(juego);
     leerDistribucionCartas(juego);
+    crearGrafo(juego);
     juego.caballoDorado = 4;
     
     string nombre;
@@ -254,6 +255,8 @@ bool Risk::inicializar(Risk &juego){
             }    
         }while(juego.jugadores[i].infanteria!=0);
     }
+    mostrarGrafo(juego);
+    actualizarGrafo(juego);
     return true;
 }
 
@@ -342,6 +345,7 @@ void Risk::crearPaisesDisponibles(Risk &juego){
 }
 
 bool Risk::turno(Risk &juego, string id){
+    actualizarGrafo(juego);
     int respuesta;
     int codigoAux;
     int codigoPaisAtacar;
@@ -414,6 +418,7 @@ bool Risk::turno(Risk &juego, string id){
             cout << "\n==== MENU DE ATAQUE ====\n";
             cout << "Que desea hacer?\n";
             cout << "1: Atacar un territorio\n";
+            cout << "2: ver la conquista mas barata";
             cout << "0: Dejar de atacar\n";
             cout << "$ ";
             
@@ -458,6 +463,19 @@ bool Risk::turno(Risk &juego, string id){
                     }   
                 }
             }
+            else if (respuesta == 2){
+            int codigo;
+            do{
+                system("cls");
+                imprimirTerritoriosDeOtrosJugadores(juego, jugador);
+                cout << "ingrese el codigo del pais el cual desea conquistar: " << endl;
+                cout <<"$";
+                cin >> codigo;
+            }while(!codigoSolicitadoAdecuado(juego,jugador,codigo));
+
+            costo_Conquista(juego, jugador, codigo);
+            }
+   
             else if (respuesta == 0) {
                 menuAtaque = false;
             }
@@ -1312,4 +1330,115 @@ string Risk::pasarDeCodificadaANormal(string cadenaCodificada, Nodo* raiz){
     }
     
     return textoNormal;
+}
+
+void Risk::crearGrafo(Risk &juego){
+    ifstream archivo("files\\Relaciones.txt");
+    string linea;
+    int codigo;
+    Vertice vertice;
+    Arista arista;
+    int contador = 1;
+
+    if (archivo.is_open()) {
+        while (getline(archivo, linea)) {
+            istringstream iss(linea);
+            iss >> codigo;
+            vertice.id = codigo;
+            juego.grafo.vertices.insert(make_pair(codigo,vertice));
+            char separador;
+            iss >> separador;
+            int relacionado;
+            while (iss >> relacionado) {
+                arista.idOrigen= codigo;
+                arista.idDestino = relacionado;
+                arista.peso = 0;
+                juego.grafo.aristas.insert(make_pair(contador,arista));
+                contador++;
+                if (iss.peek() == ',') {
+                    iss.ignore();
+                }
+            }
+        }
+    archivo.close();
+    }
+}
+void Risk::mostrarGrafo(Risk &juego){
+    cout << "Vertices:" << endl;
+        for (const auto& par : juego.grafo.vertices) {
+            cout << "ID del vertice: " << par.first << ", Valor: " << par.second.id << endl;
+        }
+
+        std::cout << "\nAristas:" << endl;
+        for (const auto& par : juego.grafo.aristas) {
+            cout << "ID de la arista: " << par.first << ", Origen: " << par.second.idOrigen
+                      << ", Destino: " << par.second.idDestino << ", Peso: " << par.second.peso << endl;
+        }
+}
+
+void Risk::actualizarGrafo(Risk &juego){
+    for(const Jugador &jugador: juego.jugadores){
+        for(const Pais &pais : jugador.territorios){
+            for (auto& par : juego.grafo.aristas) {
+                if(par.second.idDestino == pais.codigo){
+                    par.second.setPeso(pais.infanteria);
+                }
+            }
+        }
+    }
+}
+
+void Risk::imprimirDistancias(vector<vector<double>> distancias){
+        int n = distancias.size();
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (distancias[i][j] == std::numeric_limits<double>::infinity()) {
+                    std::cout << "Infinito ";
+                } else {
+                    std::cout << distancias[i][j] << " ";
+                }
+            }
+            std::cout << std::endl;
+        }
+}
+
+void Risk::costo_Conquista(Risk &juego, Jugador jugador, int codigo){
+    actualizarGrafo(juego);
+    auto distancias = juego.grafo.floydWarshall();
+    imprimirDistancias(distancias);
+    int territorioDado =  codigo;
+    int territorioMasCercano = -1; 
+    double distanciaMasCorta = std::numeric_limits<double>::infinity();
+    for (int i = 0; i < jugador.territorios.size();i++) {
+        int territorioControlado = jugador.territorios[i].codigo;
+        if (distancias[territorioControlado][territorioDado] < distanciaMasCorta) {
+            distanciaMasCorta = distancias[territorioControlado][territorioDado];
+            territorioMasCercano = territorioControlado;
+        }
+    }
+    cout << "el territorio mas cercano a " << territorioDado << "es: " << territorioMasCercano << " con un costo de: " << distanciaMasCorta;
+}
+
+void Risk::imprimirTerritoriosDeOtrosJugadores(Risk &juego, Jugador jugador1){
+    for(const Jugador &jugador: juego.jugadores){
+        if(jugador1.nombre != jugador.nombre){
+            cout << "Terrotorios de " << jugador.nombre << endl;
+            for(const Pais &pais : jugador.territorios){
+                cout << pais.codigo <<": " <<pais.nombre << endl;
+            }
+        }   
+    }
+}
+
+bool Risk::codigoSolicitadoAdecuado(Risk &juego,Jugador jugador1, int codigo){
+    for(const Jugador &jugador: juego.jugadores){
+        if(jugador1.nombre != jugador.nombre){
+            for(const Pais &pais : jugador.territorios){
+                if(codigo = pais.codigo){
+                    return true;
+                }
+            }
+        }   
+    }
+    return false;
 }
