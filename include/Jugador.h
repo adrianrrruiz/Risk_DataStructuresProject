@@ -37,7 +37,7 @@ public:
     string nombre;
     vector<Pais> territorios;
     vector<Carta> cartas;
-    int infanteria;
+    int infanteria = 0;
     int resultadoDado;
 };
 

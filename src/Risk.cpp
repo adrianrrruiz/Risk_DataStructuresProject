@@ -418,7 +418,8 @@ bool Risk::turno(Risk &juego, string id){
             cout << "\n==== MENU DE ATAQUE ====\n";
             cout << "Que desea hacer?\n";
             cout << "1: Atacar un territorio\n";
-            cout << "2: Ver la conquista mas barata\n";
+            cout << "2: Ver lo que me cuesta conquistar un territorio\n";
+            cout << "3: Ver la conquista mas barata\n";
             cout << "0: Dejar de atacar\n";
             cout << "$ ";
             
@@ -464,18 +465,27 @@ bool Risk::turno(Risk &juego, string id){
                 }
             }
             else if (respuesta == 2){
-            int codigo;
+            int territorioDado;
             do{
                 system("cls");
                 imprimirTerritoriosDeOtrosJugadores(juego, jugador);
-                cout << "ingrese el codigo del pais el cual desea conquistar: " << endl;
-                cout <<"$";
-                cin >> codigo;
-            }while(!codigoSolicitadoAdecuado(juego,jugador,codigo));
-
-            costo_Conquista(juego, jugador, codigo);
+                cout << "Ingrese el codigo del pais el cual desea conquistar: " << endl;
+                cout <<"$ ";
+                cin >> territorioDado;
+            }while(!codigoSolicitadoAdecuado(juego,jugador,territorioDado));
+                int territorioMasCercano;
+                double distanciaMasCorta;
+                costo_Conquista(juego, jugador, territorioDado, territorioMasCercano, distanciaMasCorta);
+                cout << "Para conquistar el territorio " << territorioDado << ", debe atacar desde " << territorioMasCercano << " . Debe conquistar " << distanciaMasCorta << " unidades de ejercito.\n";
+                system("pause");
             }
-   
+            else if (respuesta == 3){
+                int territorioMasCercano, territorioDado;
+                double distanciaMasCorta = 1000;
+                conquistaMasBarata(juego, jugador, territorioDado, territorioMasCercano, distanciaMasCorta);
+                cout << "La conquista mas barata es avanzar sobre el territorio " << territorioDado << " desde el territorio " << territorioMasCercano << " . Debe conquistar " << distanciaMasCorta << " unidades de ejercito.\n";
+                system("pause");
+            }
             else if (respuesta == 0) {
                 menuAtaque = false;
             }
@@ -1404,13 +1414,12 @@ void Risk::imprimirDistancias(vector<vector<double>> distancias){
         }
 }
 
-void Risk::costo_Conquista(Risk &juego, Jugador jugador, int codigo){
+void Risk::costo_Conquista(Risk &juego, Jugador jugador, int &territorioDado, int &territorioMasCercano, double &distanciaMasCorta){
     actualizarGrafo(juego);
     auto distancias = juego.grafo.floydWarshall();
     //imprimirDistancias(distancias);
-    int territorioDado =  codigo;
-    int territorioMasCercano = -1; 
-    double distanciaMasCorta = numeric_limits<double>::infinity();
+    territorioMasCercano = -1; 
+    distanciaMasCorta = numeric_limits<double>::infinity();
     for (int i = 0; i < jugador.territorios.size();i++) {
         int territorioControlado = jugador.territorios[i].codigo;
         if (distancias[territorioControlado][territorioDado] < distanciaMasCorta) {
@@ -1418,14 +1427,12 @@ void Risk::costo_Conquista(Risk &juego, Jugador jugador, int codigo){
             territorioMasCercano = territorioControlado;
         }
     }
-    cout << "El territorio mas cercano a " << territorioDado << " es: " << territorioMasCercano << " con un costo de: " << distanciaMasCorta << endl;
-    system("pause");
 }
 
 void Risk::imprimirTerritoriosDeOtrosJugadores(Risk &juego, Jugador jugador1){
     for(const Jugador &jugador: juego.jugadores){
         if(jugador1.nombre != jugador.nombre){
-            cout << "Terrotorios de " << jugador.nombre << endl;
+            cout << "Territorios de " << jugador.nombre << endl;
             for(const Pais &pais : jugador.territorios){
                 cout << pais.codigo <<": " <<pais.nombre << endl;
             }
@@ -1444,4 +1451,22 @@ bool Risk::codigoSolicitadoAdecuado(Risk &juego,Jugador jugador1, int codigo){
         }   
     }
     return false;
+}
+
+void Risk::conquistaMasBarata(Risk &juego, Jugador jugador1, int &territorioDado, int &territorioMasCercano, double &distanciaMasCorta){
+    int territorioOrigen, territorioDestino;
+    double costoUnidades;
+    for(const Jugador &jugador: juego.jugadores){
+        if(jugador1.nombre != jugador.nombre){
+            for(const Pais &pais : jugador.territorios){
+                territorioDestino = pais.codigo;
+                costo_Conquista(juego, jugador1, territorioDestino, territorioOrigen, costoUnidades);
+                if(costoUnidades < distanciaMasCorta){
+                    distanciaMasCorta = costoUnidades;
+                    territorioMasCercano = territorioOrigen;
+                    territorioDado = territorioDestino;
+                }
+            }
+        }   
+    }
 }
