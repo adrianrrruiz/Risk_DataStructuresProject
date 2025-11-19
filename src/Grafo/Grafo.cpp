@@ -1,4 +1,4 @@
-#include "..\\..\\include\\Grafo\\Grafo.h"
+#include "../../include/Grafo/Grafo.h"
 
 vector<vector<double>> Grafo::floydWarshall()
 {

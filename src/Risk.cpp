@@ -1,8 +1,8 @@
-#include "..\\include\\Risk.h"
+#include "../include/Risk.h"
 
 void Risk::leerContinentes(Risk &juego) {
     try{
-        ifstream file("files\\Continentes.txt");
+        ifstream file("files/Continentes.txt");
         string linea, nombre;
         int codigo, numeroPaises;
         if (file.is_open()) {
@@ -31,7 +31,7 @@ void Risk::leerContinentes(Risk &juego) {
 }
 
 void Risk::leerPaises(Risk &juego){
-    ifstream file("files\\Paises.txt");
+    ifstream file("files/Paises.txt");
     string linea, nombre;
     int codigoContinente, codigo;
 
@@ -62,7 +62,7 @@ void Risk::leerPaises(Risk &juego){
 }
 
 void Risk::leerRelaciones(Risk &juego) {
-    ifstream archivo("files\\Relaciones.txt");
+    ifstream archivo("files/Relaciones.txt");
     string linea;
     int codigo;
 
@@ -91,7 +91,7 @@ void Risk::leerRelaciones(Risk &juego) {
     archivo.close();
 }
 void Risk::leerDistribucionCartas(Risk &juego) {
-    ifstream archivo("files\\cartas.txt");
+    ifstream archivo("files/cartas.txt");
     
     if (archivo.is_open()){
         string linea;
@@ -186,17 +186,17 @@ bool Risk::inicializar(Risk &juego){
 
     //ingreso de los participantes al juego
         for(int i=0; i<juego.cantidadJugadores;i++){
-            system("cls");
+            CLEAR_SCREEN;
             cout<<"Ingrese el nombre del participante No. " << i+1 << ":\n";
             cout << "$ ";
             cin>>nombre;
             color=imprimirColores(juego);
             eliminarColor(juego,color);
             cout<<"==== Se lanzara el DADO para ver el ORDEN a la hora de escoger territorio ====\n";
-            system("pause");
+            PAUSE;
             numeroDado= lanzamientoDado();
             cout << "- Saco un: " << numeroDado << endl;
-            system("pause");
+            PAUSE;
             jugador.nombre=nombre;
             jugador.color=color;
             jugador.infanteria=infanteriaXJugador;
@@ -212,7 +212,7 @@ bool Risk::inicializar(Risk &juego){
     Pais paisEscogido;
 
     for(int i=0;i<42;i++){
-        system("cls");
+        CLEAR_SCREEN;
         Jugador& jugadorActual = juego.jugadores[contador];
         cout << "==== TURNO DE " << jugadorActual.nombre << " ====\n";
         
@@ -234,7 +234,7 @@ bool Risk::inicializar(Risk &juego){
     int codigoAux, cantidadTropas;
     for(int i=0;i<juego.cantidadJugadores;i++){
         do{
-            system("cls");
+            CLEAR_SCREEN;
             cout <<"\n==== " << juego.jugadores[i].nombre << " tienes " << juego.jugadores[i].infanteria << " tropas, donde las deseas repartir? ====\n";
             juego.jugadores[i].imprimirTerritorios(juego.jugadores[i]);
             cout << "$ ";
@@ -261,12 +261,12 @@ bool Risk::inicializar(Risk &juego){
 }
 
 void Risk::imprimirJugadores(Risk &juego){
-    system("cls");
+    CLEAR_SCREEN;
     cout << "\n==== JUGADORES CREADOS ====\n";
     for(const Jugador &jugador : juego.jugadores){
             cout <<"Jugador: " << jugador.nombre <<"   -   Color: "<<jugador.color << "\n";
     }
-    system("pause");
+    PAUSE;
 }
 
 int Risk::evaluarInfanteria(Risk &juego){
@@ -355,7 +355,7 @@ bool Risk::turno(Risk &juego, string id){
     if(jugadorExiste(juego,id)){
 
         Jugador& jugador = jugadorEnTurno(juego,id);
-        system("cls");
+        CLEAR_SCREEN;
         cout << "==== TURNO DE " << jugador.nombre << " ====\n";
         cout << "1ra FASE : Obtener y ubicar nuevas unidades de ejercito.\n\n" ;
         
@@ -410,11 +410,11 @@ bool Risk::turno(Risk &juego, string id){
         }
 
         //Menu de ataque
-        system("cls");
+        CLEAR_SCREEN;
         cout << "\n\n2da FASE: Ataque\n";
-        system("pause");
+        PAUSE;
         do {
-            system("cls");
+            CLEAR_SCREEN;
             cout << "\n==== MENU DE ATAQUE ====\n";
             cout << "Que desea hacer?\n";
             cout << "1: Atacar un territorio\n";
@@ -426,7 +426,7 @@ bool Risk::turno(Risk &juego, string id){
             cin >> respuesta;
         
             if (respuesta == 1) {
-                system("cls");
+                CLEAR_SCREEN;
                 cout << "==== Elige un territorio propio el cual LIMITE con el territorio que desees ATACAR ====\n";
                 jugador.imprimirTerritorios(jugador);
                 cout << "$ ";
@@ -467,7 +467,7 @@ bool Risk::turno(Risk &juego, string id){
             else if (respuesta == 2){
             int territorioDado;
             do{
-                system("cls");
+                CLEAR_SCREEN;
                 imprimirTerritoriosDeOtrosJugadores(juego, jugador);
                 cout << "Ingrese el codigo del pais el cual desea conquistar: " << endl;
                 cout <<"$ ";
@@ -477,14 +477,14 @@ bool Risk::turno(Risk &juego, string id){
                 double distanciaMasCorta;
                 costo_Conquista(juego, jugador, territorioDado, territorioMasCercano, distanciaMasCorta);
                 cout << "Para conquistar el territorio " << territorioDado << ", debe atacar desde " << territorioMasCercano << " . Debe conquistar " << distanciaMasCorta << " unidades de ejercito.\n";
-                system("pause");
+                PAUSE;
             }
             else if (respuesta == 3){
                 int territorioMasCercano, territorioDado;
                 double distanciaMasCorta = 1000;
                 conquistaMasBarata(juego, jugador, territorioDado, territorioMasCercano, distanciaMasCorta);
                 cout << "La conquista mas barata es avanzar sobre el territorio " << territorioDado << " desde el territorio " << territorioMasCercano << " . Debe conquistar " << distanciaMasCorta << " unidades de ejercito.\n";
-                system("pause");
+                PAUSE;
             }
             else if (respuesta == 0) {
                 menuAtaque = false;
@@ -493,7 +493,7 @@ bool Risk::turno(Risk &juego, string id){
                 cout << "Respuesta no válida.\n";
             }
         } while (menuAtaque);
-        system("cls");
+        CLEAR_SCREEN;
         cout << "\n\n3ra FASE : Redistribucion\n";
         do{
             cout << "\n==== REDISTRIBUCION ====\n";
@@ -515,7 +515,7 @@ void Risk::redistribuirTropas(Risk& juego, Jugador& jugador){
     int codigoPrimerTerritorio, codigoSegundoTerritorio, cantTropas;
     bool redistribucionExitosa = false;
     do{
-        system("cls");
+        CLEAR_SCREEN;
         cout << "====== REDISTRIBUCION DE TROPAS ======\n\n";
         cout << "Asi se encuentran ubicadas tus tropas en el mapa:\n";
         jugador.imprimirTerritorios(jugador);
@@ -1083,13 +1083,13 @@ void Risk::crearArbol(map<char, long> &tablaFrecuencia, Nodo*&raiz)
 
     priority_queue<Nodo*, vector<Nodo*>, comp> copiaPrioridad = colaPrioridad;
     cout << "Recorriendo cola de prioridad \n";
-    system("pause");
+    PAUSE;
     while (!copiaPrioridad.empty()) {
         Nodo* elemento = copiaPrioridad.top();
         cout << "simbolo " << elemento->simbolo << "- frecuencia " << elemento->frecuencia<< endl;
         copiaPrioridad.pop();
     }
-    system("pause");
+    PAUSE;
     //Con los dos primeros elementos de la cola, crea un nuevo nodo y su raiz es la suma de sus frecuencias
     while(colaPrioridad.size() != 1){
         Nodo *izq = colaPrioridad.top();
@@ -1156,7 +1156,7 @@ void Risk::guardarComprimido(string nombreArchivo){
     for(auto pair : diccionarioHuffman){
         cout << " " << pair.first << " - " << pair.second <<endl;
     }
-    system("pause");
+    PAUSE;
     //Obtener codigo completo codificado
     string cadenaCodificada = generarCodigoCodificado(todoElArchivoEnUnaCadena,diccionarioHuffman);
     int cerosAdicionales = modificarCadena(cadenaCodificada);
@@ -1198,7 +1198,7 @@ void Risk::guardarComprimido(string nombreArchivo){
         //Escribir 0s adicionales en la cadena comprimida
         cout << "Ceros adicionales: " << cerosAdicionales << endl;
         archivoBin.write(reinterpret_cast<const char*>(&cerosAdicionales), sizeof(int));
-        system("pause");
+        PAUSE;
         archivoBin.close();
     }else{
         cout << "No se pudo abrir el archivo!" << endl;
@@ -1297,7 +1297,7 @@ void Risk::cargarComprimido(string nombreArchivo){
         }else{
             lecturaOK = false;
         }
-        system("pause");
+        PAUSE;
         if(lecturaOK){
             crearArbol(tablaFrecuencia, raiz);
             for(bitset<8> byte : cadenaComprimida){
@@ -1331,7 +1331,7 @@ void Risk::escribirEnArchivoDescompresion(string nombreArchivo, string textoNorm
     }
 
     cout << "El archivo se creo correctamente!" << endl;
-    system("pause");
+    PAUSE;
 }
 
 string Risk::pasarDeCodificadaANormal(string cadenaCodificada, Nodo* raiz){
@@ -1345,7 +1345,7 @@ string Risk::pasarDeCodificadaANormal(string cadenaCodificada, Nodo* raiz){
 }
 
 void Risk::crearGrafo(Risk &juego){
-    ifstream archivo("files\\Relaciones.txt");
+    ifstream archivo("files/Relaciones.txt");
     string linea;
     int codigo;
     Vertice vertice;

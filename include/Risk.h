@@ -3,13 +3,14 @@
 
 #include <iostream>
 #include <vector>
+#include "platform.h"
 #include "Continente.h"
 #include "Carta.h"
 #include "Jugador.h"
 #include "Nodo.h"
-#include "Grafo\\Grafo.h"
-#include "Grafo\\Vertice.h"
-#include "Grafo\\Arista.h"
+#include "Grafo/Grafo.h"
+#include "Grafo/Vertice.h"
+#include "Grafo/Arista.h"
 #include <fstream>
 #include <sstream>
 #include <algorithm>

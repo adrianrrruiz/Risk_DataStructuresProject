@@ -4,6 +4,7 @@
 #include <vector>
 #include <ctime>
 #include <cstdlib>
+#include "include/platform.h"
 #include "include/Risk.h"
 
 using namespace std;
@@ -22,7 +23,7 @@ int main(int argc, char* argv[]) {
     vector<int> idJugadores;
     vector<int>::iterator itIdJugadores;
     Risk juego;
-    system("cls");
+    CLEAR_SCREEN;
     cout << "\n---- BIENVENIDO A RISK ----\n"; 
     cout << "Desarrollado por: Adrian, Juliana y Daniel\n";
     do {
@@ -39,7 +40,7 @@ int main(int argc, char* argv[]) {
                 cout << "inicializar <nombre_archivo> -> Inicializa el juego con los datos contenidos en el archivo identificado por <nombre_archivo>\n\n";
             }else{
                 if (!inicializado){
-                    system("cls");
+                    CLEAR_SCREEN;
                     bool finalizarInicializacion=juego.inicializar(juego);
                     if(finalizarInicializacion){
                         cout << "\nEl juego se ha inicializado correctamente!\n\n";

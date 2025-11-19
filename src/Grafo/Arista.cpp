@@ -1,4 +1,4 @@
-#include "..\\..\\include\\Grafo\\Arista.h"
+#include "../../include/Grafo/Arista.h"
 
 void Arista::setPeso(int peso){
     this->peso = peso;
