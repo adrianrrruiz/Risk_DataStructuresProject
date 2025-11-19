@@ -43,7 +43,7 @@ g++ -std=c++11 -o proyecto main.cpp src/*.cpp src/Grafo/*.cpp
 ./proyecto
 ```
 
-## Pruebas unitarias
+## 🧪 Pruebas unitarias
 
 ### Windows
 ```batch
@@ -120,7 +120,7 @@ El proyecto detecta automáticamente el sistema operativo y ajusta:
 
 Si deseas contribuir a este proyecto, sigue estos pasos:
 
-1. Clona el repositorio (https://github.com/aruiz08/Risk_DataStructuresProject.git).
+1. Clona el repositorio (https://github.com/adrianrrruiz/Risk_DataStructuresProject.git).
 2. Crea una rama para tu función o corrección: `git checkout -b nombre-de-la-rama`
 3. Realiza tus cambios y realiza commits: `git commit -m "Descripción de los cambios"`
 4. Sube tu rama al repositorio: `git push origin nombre-de-la-rama`
@@ -132,6 +132,6 @@ Este proyecto está bajo la Licencia [MIT](LICENSE).
 ## Autores
 
 - [Daniel Carvajal](https://github.com/DaniCarvajalG) 
-- [Adrain Ruiz](https://github.com/aruiz08)
+- [Adrian Ruiz](https://github.com/adrianrrruiz)
 - [Juliana Bejarano](https://github.com/Julibejarano)
 
